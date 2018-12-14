@@ -12,7 +12,7 @@
         public CRMServiceRequest ServiceRequest { get; set; }
         public string PaymentReference { get; set; }
         public PaymentStatus PaymentStatus { get; set; }
-
+        public bool callTransferred { get; set; }
     }
 
 }

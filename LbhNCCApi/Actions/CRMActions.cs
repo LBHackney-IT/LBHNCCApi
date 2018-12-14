@@ -147,6 +147,7 @@ namespace LbhNCCApi.Actions
             {
                 nccJObject["hackney_paymentstatus"] = Convert.ChangeType(ncc.PaymentStatus, ncc.PaymentStatus.GetTypeCode()).ToString();
             }
+            nccJObject["hackney_calltransferred"] = ncc.callTransferred.ToString();
             return nccJObject;
         }
 

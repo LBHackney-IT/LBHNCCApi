@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.ServiceModel;
 using System.Threading.Tasks;
 using ArrearsAgreementService;
 using LbhNCCApi.Actions;
@@ -18,6 +19,7 @@ namespace LbhNCCApi.Controllers
     {
 
         private ICRMClientActions _client = null;
+        private string UHWWebservice = Environment.GetEnvironmentVariable("UHWWebservice");
         private string UHWSUsername = Environment.GetEnvironmentVariable("UHWSUsername");
         private string UHWPassword = Environment.GetEnvironmentVariable("UHWPassword");
         public UHController(ICRMClientActions client)
@@ -31,7 +33,9 @@ namespace LbhNCCApi.Controllers
         {
             try
             {
-                var client = new ArrearsAgreementServiceClient();
+                BasicHttpBinding binding = new BasicHttpBinding();
+                EndpointAddress address = new EndpointAddress(UHWWebservice);
+                var client = new ArrearsAgreementServiceClient(binding, address);
 
                 var request = new ArrearsActionCreateRequest
                 {
@@ -72,6 +76,22 @@ namespace LbhNCCApi.Controllers
             {
                 UHActions uh = new UHActions();
                 var result = uh.GetAllActionDiary(tenancyAgreementId);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return new Trap().ThrowErrorMessage(ex);
+            }
+        }
+
+        [HttpGet]
+        [Route("GetAllRentBreakdowns")]
+        public async Task<IActionResult> GetAllRentBreakdowns(string tenancyAgreementId)
+        {
+            try
+            {
+                UHActions uh = new UHActions();
+                var result = uh.GetAllRentBreakDowns(tenancyAgreementId);
                 return Ok(result);
             }
             catch (Exception ex)

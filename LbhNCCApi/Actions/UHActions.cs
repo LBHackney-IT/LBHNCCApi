@@ -36,6 +36,24 @@ namespace LbhNCCApi.Actions
             return results;
         }
 
+        public List<RentBreakdowns> GetAllRentBreakDowns(string tenancyAgreementRef)
+        {
+            var results = conn.Query<RentBreakdowns>(
+                $@" SELECT  dt.deb_desc Description, dt.deb_code Code, deb_value Value, di.eff_date EffectiveDate, di.deb_last_charge LastChargeDate    
+                    FROM debitem di 
+                    inner join debtype dt on dt.deb_code = di.deb_code
+                    WHERE debitem_sid IN
+                    (
+	                    SELECT Max(debitem_sid)
+	                    FROM debitem di
+	                    where (di.tag_ref = '{tenancyAgreementRef}' or di.prop_ref = (select prop_ref from tenagree where tag_ref = '{tenancyAgreementRef}'))     
+	                    GROUP BY deb_code
+                    ) and deb_active = 1",
+                new { allRefs = tenancyAgreementRef }
+            ).ToList();
+            return results;
+        }
+
         public List<dynamic> GetAllActionDiaries(string tenancyAgreementRef)
         {
             var results = conn.Query<ADNotes>(
