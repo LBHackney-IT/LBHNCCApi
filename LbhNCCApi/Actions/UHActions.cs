@@ -48,7 +48,7 @@ namespace LbhNCCApi.Actions
 	                    FROM debitem di
 	                    where (di.tag_ref = '{tenancyAgreementRef}' or di.prop_ref = (select prop_ref from tenagree where tag_ref = '{tenancyAgreementRef}'))     
 	                    GROUP BY deb_code
-                    ) and deb_active = 1",
+                    ) ",
                 new { allRefs = tenancyAgreementRef }
             ).ToList();
             return results;
