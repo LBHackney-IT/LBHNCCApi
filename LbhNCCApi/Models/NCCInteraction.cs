@@ -13,6 +13,8 @@
         public string PaymentReference { get; set; }
         public PaymentStatus PaymentStatus { get; set; }
         public bool callTransferred { get; set; }
+        public string housingTagRef { get; set; }
+        public string otherReason { get; set; }
     }
 
 }

@@ -140,5 +140,53 @@ namespace LbhNCCApi.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("GetAllTenancyTransactions")]
+        public async Task<IActionResult> GetAllTenancyTransactions(string tenancyAgreementId, string startdate, string enddate)
+        {
+            try
+            {
+                UHActions uh = new UHActions();
+                var result = uh.GetAllTenancyTransactions(tenancyAgreementId, startdate, enddate);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return new Trap().ThrowErrorMessage(ex);
+            }
+        }
+
+        [HttpGet]
+        [Route("GetAllTenancyTransactionStatements")]
+        public async Task<IActionResult> GetAllTenancyTransactionStatements(string tenancyAgreementId, string startdate, string enddate)
+        {
+            try
+            {
+                UHActions uh = new UHActions();
+                var result = uh.GetAllTenancyTransactionStatements(tenancyAgreementId, startdate, enddate);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return new Trap().ThrowErrorMessage(ex);
+            }
+        }
+
+        [HttpGet]
+        [Route("GetTenancyAgreementDetails")]
+        public async Task<IActionResult> GetTenancyAgreementDetails(string tenancyAgreementId)
+        {
+            try
+            {
+                UHActions uh = new UHActions();
+                var result = uh.GetTenancyAgreementDetails(tenancyAgreementId);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return new Trap().ThrowErrorMessage(ex);
+            }
+        }
+
     }
 }
