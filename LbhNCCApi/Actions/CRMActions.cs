@@ -148,6 +148,16 @@ namespace LbhNCCApi.Actions
                 nccJObject["hackney_paymentstatus"] = Convert.ChangeType(ncc.PaymentStatus, ncc.PaymentStatus.GetTypeCode()).ToString();
             }
             nccJObject["hackney_calltransferred"] = ncc.callTransferred.ToString();
+
+            if (!string.IsNullOrEmpty(ncc.housingTagRef))
+            {
+                nccJObject["hackney_housingtagref"] = ncc.housingTagRef;
+            }
+            if (!string.IsNullOrEmpty(ncc.otherReason))
+            {
+                nccJObject["hackney_otherreason"] = ncc.otherReason;
+            }
+
             return nccJObject;
         }
 
@@ -434,9 +444,11 @@ namespace LbhNCCApi.Actions
                                                   name = response["contact1_x002e_fullname"],
                                                   parentcontactId = response["contact1_x002e_parentcustomerid"],
                                                   callreason = response["housing_housingenquirytype2_x002e_housing_name"],
+                                                  otherreason = response["hackney_otherreason"],
                                                   callreasonId = response["_hackney_enquirytypeid_value"],
                                                   ticketnumber = response["hackney_name"],
                                                   servicerequestid = response["_hackney_servicerequestid_value"],
+                                                  housingtagref = response["hackney_housingtagref"],
                                                   contactid = response["_hackney_contactid_value"]
                                               } into grp
                                               select new
@@ -445,9 +457,11 @@ namespace LbhNCCApi.Actions
                                                   grp.Key.name,
                                                   grp.Key.parentcontactId,
                                                   grp.Key.callreason,
+                                                  grp.Key.otherreason,
                                                   grp.Key.callreasonId,
                                                   grp.Key.ticketnumber,
                                                   grp.Key.servicerequestid,
+                                                  grp.Key.housingtagref,
                                                   grp.Key.contactid
                                               });
                             //
@@ -459,11 +473,16 @@ namespace LbhNCCApi.Actions
                                 callsObj.createdon = response.createdon;
                                 callsObj.name = response.name;
                                 callsObj.callreason = response.callreason;
+                                callsObj.otherreason = response.otherreason;
                                 callsObj.callreasonId = response.callreasonId;
                                 callsObj.ticketnumber = response.ticketnumber;
                                 callsObj.servicerequestid = response.servicerequestid;
                                 callsObj.contactid = response.contactid;
-                                if (response.parentcontactId != null)
+                                if (response.housingtagref!=null && !string.IsNullOrEmpty(response.housingtagref.ToString()))
+                                {
+                                    callsObj.housingref = response.housingtagref;
+                                }
+                                else if (response.parentcontactId != null)
                                 {
                                     var housingRef = GetHousingRefFromAccount(response.parentcontactId.ToString(), hclient);
                                     callsObj.housingref = housingRef;

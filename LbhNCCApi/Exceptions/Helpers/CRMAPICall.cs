@@ -261,6 +261,7 @@ namespace LbhNCCApi.Helpers
                     <attribute name='hackney_servicerequestid' />
                     <attribute name='hackney_contactid' />
                     <attribute name='hackney_enquirytypeid' />
+                    <attribute name='hackney_housingtagref' />
                     <order descending = 'true' attribute = 'createdon' />
                     <link-entity name='contact' from='contactid' to='hackney_contactid' link-type='inner' >
                     <attribute name='fullname' />
@@ -287,15 +288,15 @@ namespace LbhNCCApi.Helpers
                 XmlNode sectionnode = doc.DocumentElement.SelectSingleNode(@"articledata/section");
 
                 var result = new Dictionary<string, object>
-            {
                 {
-                    "response", new Dictionary<string, object>{
-                            { "contents", sectionnode.InnerText}
-                    }
+                        {
+                            "response", new Dictionary<string, object>{
+                                    { "contents", sectionnode.InnerText}
+                            }
+                        }
+                    };
+                    return result;
                 }
-            };
-                return result;
-            }
             return null;
         }
 
@@ -313,5 +314,6 @@ namespace LbhNCCApi.Helpers
         {
             return $@"/api/data/v8.2/hackney_nccinteractionses({payment.InteractionId})?$select=hackney_paymentreference, hackney_paymentstatus";
         }
+
     }
 }
