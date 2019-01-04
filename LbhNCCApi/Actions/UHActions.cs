@@ -144,14 +144,14 @@ namespace LbhNCCApi.Actions
                     DebitValue = realvalue;
                     fDebitValue = float.Parse(DebitValue);
                     RecordBalance = (RecordBalance - fDebitValue);
-                    DebitValue = (-fDebitValue).ToString();
+                    DebitValue = (fDebitValue).ToString();
                 }
                 else
                 {
                     CreditValue = realvalue;
                     fCreditValue = float.Parse(CreditValue);
                     RecordBalance = (RecordBalance - fCreditValue);
-                    CreditValue = (-fCreditValue).ToString();
+                    CreditValue = (fCreditValue).ToString();
                 }
                 statement.Date = trans.Date;
                 statement.Description = trans.Description;
