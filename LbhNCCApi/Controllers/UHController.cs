@@ -142,12 +142,12 @@ namespace LbhNCCApi.Controllers
 
         [HttpGet]
         [Route("GetAllTenancyTransactions")]
-        public async Task<IActionResult> GetAllTenancyTransactions(string tenancyAgreementId, string startdate, string enddate)
+        public async Task<IActionResult> GetAllTenancyTransactions(string tenancyAgreementId, string startdate)
         {
             try
             {
                 UHActions uh = new UHActions();
-                var result = uh.GetAllTenancyTransactions(tenancyAgreementId, startdate, enddate);
+                var result = uh.GetAllTenancyTransactions(tenancyAgreementId, startdate);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -158,12 +158,12 @@ namespace LbhNCCApi.Controllers
 
         [HttpGet]
         [Route("GetAllTenancyTransactionStatements")]
-        public async Task<IActionResult> GetAllTenancyTransactionStatements(string tenancyAgreementId, string startdate, string enddate)
+        public async Task<IActionResult> GetAllTenancyTransactionStatements(string tenancyAgreementId, string startdate)
         {
             try
             {
                 UHActions uh = new UHActions();
-                var result = uh.GetAllTenancyTransactionStatements(tenancyAgreementId, startdate, enddate);
+                var result = uh.GetAllTenancyTransactionStatements(tenancyAgreementId, startdate);
                 return Ok(result);
             }
             catch (Exception ex)

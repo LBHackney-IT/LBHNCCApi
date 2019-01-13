@@ -88,24 +88,24 @@ namespace LbhNCCApi.Actions
             return nccList;
         }
 
-        public List<TenancyTransactions> GetAllTenancyTransactions(string tenancyAgreementRef, string startdate, string enddate)
+        public List<TenancyTransactions> GetAllTenancyTransactions(string tenancyAgreementRef, string startdate)
         {
             string fstartDate = Utils.FormatDate(startdate);
-            string fendDate = Utils.FormatDate(enddate);
-            string query = $@" select sum(rtrans.real_value) as Amount, post_date as Date,'RNT' as Type, 'Total Rent' AS Description 
-                    from rtrans 
-                    where tag_ref <> '' and tag_ref<> 'ZZZZZZ' 
-                    and tag_ref = '{tenancyAgreementRef}' 
-                    and post_date BETWEEN '{fstartDate}' AND '{fendDate}' and rtrans.trans_type like 'D%' and post_date = post_date group by tag_ref,post_date,prop_ref,house_ref 
-                    union all 
-                    select rtrans.real_value as Amount, rtrans.post_date as date, rtrans.trans_type as Type,  RTRIM(rectype.rec_desc) AS Description
+            string fendDate = DateTime.Now.ToString("yyyy-MM-dd"); 
+            string query = $@" select  transno, rtrans.real_value as Amount, rtrans.post_date as date, rtrans.trans_type as Type,  RTRIM(rectype.rec_desc) AS Description
                     from rtrans join rectype on rtrans.trans_type = rectype.rec_code 
                     where tag_ref<> '' and tag_ref<> 'ZZZZZZ' 
                     and post_date BETWEEN '{fstartDate}' AND '{fendDate}' 
                     and tag_ref = '{tenancyAgreementRef}' 
                     and trans_type in 
-                    (select rec_code from rectype where rec_group < 7 or rec_code = 'RIT') 
-                    order by post_date desc ";
+                    (select rec_code from rectype where rec_group <= 8 or rec_code = 'RIT') 
+                    union all 
+                    select  999999999999999999 as transno,  sum(rtrans.real_value) as Amount, post_date as Date,'RNT' as Type, 'Total Rent' AS Description 
+                    from rtrans 
+                    where tag_ref <> '' and tag_ref<> 'ZZZZZZ' 
+                    and tag_ref = '{tenancyAgreementRef}' 
+                    and post_date BETWEEN '{fstartDate}' AND '{fendDate}' and rtrans.trans_type like 'D%' and post_date = post_date group by tag_ref,post_date,prop_ref,house_ref 
+                    order by post_date desc";
             var results = conn.Query<TenancyTransactions>(query, new { allRefs = tenancyAgreementRef }).ToList();
             return results;
         }
@@ -113,7 +113,7 @@ namespace LbhNCCApi.Actions
         public TenancyAgreementDetials GetTenancyAgreementDetails(string tenancyAgreementRef)
         {
             var result = conn.QueryFirstOrDefault<TenancyAgreementDetials>(
-                $@" select cur_bal as CurrentBalance, cot as StartDate,  RTRIM(house_ref) as HousingReferenceNumber, RTRIM(prop_ref) as PropertyReferenceNumber,
+                $@" select cur_bal as CurrentBalance, (cur_bal*-1) as DisplayBalance, cot as StartDate,  RTRIM(house_ref) as HousingReferenceNumber, RTRIM(prop_ref) as PropertyReferenceNumber,
                     RTRIM(u_saff_rentacc) as PaymentReferenceNumber, terminated as IsAgreementTerminated, tenure as  TenureType 
                     from tenagree
                     where  tag_ref = '{tenancyAgreementRef}' "
@@ -122,10 +122,10 @@ namespace LbhNCCApi.Actions
 
         }
 
-        public List<TenancyTransactionStatements> GetAllTenancyTransactionStatements(string tenancyAgreementId, string startdate, string enddate)
+        public List<TenancyTransactionStatements> GetAllTenancyTransactionStatements(string tenancyAgreementId, string startdate)
         {
             TenancyAgreementDetials tenantDet = GetTenancyAgreementDetails(tenancyAgreementId);
-            List<TenancyTransactions> lstTransactions = GetAllTenancyTransactions(tenancyAgreementId, startdate, enddate);
+            List<TenancyTransactions> lstTransactions = GetAllTenancyTransactions(tenancyAgreementId, startdate);
             List<TenancyTransactionStatements> lstTransactionsState = new List<TenancyTransactionStatements>();
             float RecordBalance = 0;
             RecordBalance = float.Parse(tenantDet.CurrentBalance);
@@ -138,20 +138,21 @@ namespace LbhNCCApi.Actions
                 float fDebitValue = 0F;
                 float fCreditValue = 0F;
                 var realvalue = trans.Amount;
-                string DisplayRecordBalance = (RecordBalance).ToString("c2");
+                string DisplayRecordBalance = (-RecordBalance).ToString("c2");
+
                 if (realvalue.IndexOf("-") != -1)
                 {
                     DebitValue = realvalue;
                     fDebitValue = float.Parse(DebitValue);
                     RecordBalance = (RecordBalance - fDebitValue);
-                    DebitValue = (fDebitValue).ToString();
+                    DebitValue = (-fDebitValue).ToString("c2");
                 }
                 else
                 {
                     CreditValue = realvalue;
                     fCreditValue = float.Parse(CreditValue);
                     RecordBalance = (RecordBalance - fCreditValue);
-                    CreditValue = (fCreditValue).ToString();
+                    CreditValue = (-fCreditValue).ToString("c2");
                 }
                 statement.Date = trans.Date;
                 statement.Description = trans.Description;

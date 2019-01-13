@@ -8,6 +8,7 @@ namespace LbhNCCApi.Models
     public class TenancyAgreementDetials
     {
         public string CurrentBalance { get; set; }
+        public string DisplayBalance { get; set; }
         public string HousingReferenceNumber { get; set; }
         public string PropertyReferenceNumber { get; set; }
         public string PaymentReferenceNumber { get; set; }

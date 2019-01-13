@@ -8,6 +8,7 @@ namespace LbhNCCApi.Models
     public class GovNotifierEmailPdfInParams
     {
         public string ContactId { get; set; }
+        public string TenancyAgreementRef { get; set; }
         public string StartDate { get; set; }
         public string EndDate { get; set; }
         public string EmailTo { get; set; }
