@@ -18,9 +18,9 @@ namespace LbhNCCApi.Actions
             try
             {
                 string insertQuery = $@"SET LANGUAGE British; INSERT INTO [dbo].[LBH_Ext_GovNotifyEmailStatements]
-                                            ([ContactId], [TenancyAgreementRef], [StartDate], [EndDate], [GovTemplateId], [GovTemplateData],
+                                            ([ContactId], [TenancyAgreementRef], [StartDate], [GovTemplateId], [GovTemplateData],
                                             [EmailId], [Status], [StatusDescription], [DebugErrorMessage]) 
-                                            VALUES ('{inParams.ContactId}', '{inParams.TenancyAgreementRef}','{inParams.StartDate}', '{inParams.EndDate}', '{inParams.TemplateId}', '{inParams.TemplateData}', 
+                                            VALUES ('{inParams.ContactId}', '{inParams.TenancyAgreementRef}','{inParams.StartDate}', '{inParams.TemplateId}', '{inParams.TemplateData}', 
                                             '{inParams.EmailTo}', '1', 'Initiate', 'Initiated for Pdf generation')";
                 int result = -1;
                 using (var conn = new SqlConnection(_connstring))
