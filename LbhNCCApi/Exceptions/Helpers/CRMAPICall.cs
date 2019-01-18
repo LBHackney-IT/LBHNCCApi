@@ -192,6 +192,7 @@ namespace LbhNCCApi.Helpers
                 <attribute name='hackney_notestype' />
                 <attribute name='hackney_govnotifier_channeltype' />
                 <attribute name='hackney_govnotifier_templatename' />
+                <attribute name='hackney_otherreason' />
                 <filter>
                 <condition attribute='hackney_contactid' operator='eq' value='{ contactId }' />
                 </filter>
@@ -259,6 +260,7 @@ namespace LbhNCCApi.Helpers
                     <attribute name='createdon' />
                     <attribute name='createdby' />
                     <attribute name='hackney_servicerequestid' />
+                    <attribute name='hackney_otherreason' />
                     <attribute name='hackney_contactid' />
                     <attribute name='hackney_enquirytypeid' />
                     <attribute name='hackney_housingtagref' />
