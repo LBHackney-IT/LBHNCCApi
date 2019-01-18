@@ -113,7 +113,7 @@ namespace LbhNCCApi.Actions
         public TenancyAgreementDetials GetTenancyAgreementDetails(string tenancyAgreementRef)
         {
             var result = conn.QueryFirstOrDefault<TenancyAgreementDetials>(
-                $@" select cur_bal as CurrentBalance, (cur_bal*-1) as DisplayBalance, cot as StartDate,  RTRIM(house_ref) as HousingReferenceNumber, RTRIM(prop_ref) as PropertyReferenceNumber,
+                $@" select cur_bal as CurrentBalance, (cur_bal*-1) as DisplayBalance, (rent+service+other_charge)  as Rent, cot as StartDate,  RTRIM(house_ref) as HousingReferenceNumber, RTRIM(prop_ref) as PropertyReferenceNumber,
                     RTRIM(u_saff_rentacc) as PaymentReferenceNumber, terminated as IsAgreementTerminated, tenure as  TenureType 
                     from tenagree
                     where  tag_ref = '{tenancyAgreementRef}' "

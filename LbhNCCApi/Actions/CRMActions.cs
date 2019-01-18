@@ -364,6 +364,7 @@ namespace LbhNCCApi.Actions
                                      notes = response["hackney_notes"],
                                      callType = response["housing_housingenquirytype2_x002e_housing_enquirycalltype@OData.Community.Display.V1.FormattedValue"],
                                      callReasonType = response["housing_housingenquirytype2_x002e_housing_name"],
+                                     otherCallReasons = response["hackney_otherreason"],
                                      clientName = response["contact1_x002e_fullname"],
                                      channeltype = response["hackney_govnotifier_channeltype@OData.Community.Display.V1.FormattedValue"],
                                      templatename = response["hackney_govnotifier_templatename"]
@@ -376,24 +377,107 @@ namespace LbhNCCApi.Actions
                                      grp.Key.notes,
                                      grp.Key.callType,
                                      grp.Key.callReasonType,
+                                     grp.Key.otherCallReasons,
                                      grp.Key.clientName,
                                      grp.Key.channeltype,
                                      grp.Key.templatename
                                  });
 
+            string strSummaryType = "";
+            string strSummaryReason = "";
+            string strCreatedByDateTime = "";
+            dynamic interactionsObjsumm = null;
+
             foreach (dynamic response in groupIncident)
             {
-                dynamic interactionsObj = new ExpandoObject();
-                interactionsObj.notes = response.notes;
-                interactionsObj.notesType = response.notesType;
-                interactionsObj.callType = response.callType;
-                interactionsObj.callReasonType = response.callReasonType;
-                interactionsObj.createdBy = response.createdBy;
-                interactionsObj.clientName = response.clientName;
-                interactionsObj.createdOn = response.createdOn;
-                interactionsObj.channeltype = response.channeltype;
-                interactionsObj.templatename = response.templatename;
-                nccList.Add(interactionsObj);
+                
+                if (response.notes == "SUMMARY")
+                {
+                    if (string.IsNullOrEmpty(strCreatedByDateTime))
+                    {
+                        interactionsObjsumm = new ExpandoObject();
+                        //coming in firsttime
+                        interactionsObjsumm.notes = response.notes;
+
+                        if(response.callType!=null && !strSummaryType.Contains(response.callType.ToString()))
+                            strSummaryType += response.callType + "<br/>";
+                        if (response.otherCallReasons!=null)
+                            strSummaryReason += response.otherCallReasons.ToString() + "<br/>";
+                        else
+                            strSummaryReason += response.callReasonType + "<br/>";
+                        strSummaryReason += response.callReasonType + "<br/>";
+                        strCreatedByDateTime = response.createdOn.ToString();
+
+                        interactionsObjsumm.notesType = response.notesType;
+                        interactionsObjsumm.callType = strSummaryType;
+                        interactionsObjsumm.callReasonType = strSummaryReason;
+                        interactionsObjsumm.createdBy = response.createdBy;
+                        interactionsObjsumm.clientName = response.clientName;
+                        interactionsObjsumm.createdOn = response.createdOn;
+                        interactionsObjsumm.channeltype = response.channeltype;
+                        interactionsObjsumm.templatename = response.templatename;
+                    }
+                    else if (DateTime.Compare(DateTime.Parse(response.createdOn.ToString()), DateTime.Parse(strCreatedByDateTime))==0)
+                    {
+                        if (response.callType != null && !strSummaryType.Contains(response.callType.ToString()))
+                            strSummaryType += response.callType + "<br/>";
+                        if (response.otherCallReasons != null)
+                            strSummaryReason += response.otherCallReasons.ToString() + "<br/>";
+                        else
+                            strSummaryReason += response.callReasonType + "<br/>";
+                        strCreatedByDateTime = response.createdOn.ToString();
+                    }
+                    else
+                    {
+                        interactionsObjsumm.callType = strSummaryType;
+                        interactionsObjsumm.callReasonType = strSummaryReason;
+                        interactionsObjsumm.createdBy = response.createdBy;
+                        nccList.Add(interactionsObjsumm);
+
+                        interactionsObjsumm = new ExpandoObject();
+                        interactionsObjsumm.notes = response.notes;
+                        if (response.callType != null && !strSummaryType.Contains(response.callType.ToString()))
+                            strSummaryType += response.callType + "<br/>";
+                        if (response.otherCallReasons != null)
+                            strSummaryReason += response.otherCallReasons.ToString() + "<br/>";
+                        else
+                            strSummaryReason += response.callReasonType + "<br/>";
+                        strCreatedByDateTime = response.createdOn.ToString();
+
+                        interactionsObjsumm.notesType = response.notesType;
+                        interactionsObjsumm.callType = strSummaryType;
+                        interactionsObjsumm.callReasonType = strSummaryReason;
+                        interactionsObjsumm.createdBy = response.createdBy;
+                        interactionsObjsumm.clientName = response.clientName;
+                        interactionsObjsumm.createdOn = response.createdOn;
+                        interactionsObjsumm.channeltype = response.channeltype;
+                        interactionsObjsumm.templatename = response.templatename;
+                    }
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(strSummaryReason))
+                    {
+                        interactionsObjsumm.callType = strSummaryType;
+                        interactionsObjsumm.callReasonType = strSummaryReason;
+                        interactionsObjsumm.createdBy = response.createdBy;
+                        nccList.Add(interactionsObjsumm);
+                        strSummaryType = "";//ends here
+                        strSummaryReason = "";
+                        strCreatedByDateTime = "";
+                    }
+                    dynamic interactionsObjnormal = new ExpandoObject();
+                    interactionsObjnormal.notes = response.notes;
+                    interactionsObjnormal.notesType = response.notesType;
+                    interactionsObjnormal.callType = response.callType;
+                    interactionsObjnormal.callReasonType = response.callReasonType;
+                    interactionsObjnormal.createdBy = response.createdBy;
+                    interactionsObjnormal.clientName = response.clientName;
+                    interactionsObjnormal.createdOn = response.createdOn;
+                    interactionsObjnormal.channeltype = response.channeltype;
+                    interactionsObjnormal.templatename = response.templatename;
+                    nccList.Add(interactionsObjnormal);
+                }
             }
             return nccList;
         }

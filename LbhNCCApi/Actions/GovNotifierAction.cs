@@ -8,7 +8,7 @@ namespace LbhNCCApi.Actions
 {
     public class GovNotifierAction
     {
-        private static string _connstring = Environment.GetEnvironmentVariable("CRM365BISQLCloudConnString");
+        private static string _connstring = Environment.GetEnvironmentVariable("CRM365BISQLConnString");
         public GovNotifierAction()
         {
         }
