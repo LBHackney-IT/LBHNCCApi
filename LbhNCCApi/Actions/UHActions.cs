@@ -48,7 +48,8 @@ namespace LbhNCCApi.Actions
 	                    SELECT Max(debitem_sid)
 	                    FROM debitem di
 	                    where (di.tag_ref = '{tenancyAgreementRef}' or di.prop_ref = (select prop_ref from tenagree where tag_ref = '{tenancyAgreementRef}'))     
-	                    GROUP BY deb_code
+	                    and deb_last_charge <> '1900-01-01 00:00:00' 
+                        GROUP BY deb_code
                     ) ",
                 new { allRefs = tenancyAgreementRef }
             ).ToList();
@@ -105,7 +106,7 @@ namespace LbhNCCApi.Actions
                     where tag_ref <> '' and tag_ref<> 'ZZZZZZ' 
                     and tag_ref = '{tenancyAgreementRef}' 
                     and post_date BETWEEN '{fstartDate}' AND '{fendDate}' and rtrans.trans_type like 'D%' and post_date = post_date group by tag_ref,post_date,prop_ref,house_ref 
-                    order by post_date desc";
+                    order by post_date desc, transno asc";
             var results = conn.Query<TenancyTransactions>(query, new { allRefs = tenancyAgreementRef }).ToList();
             return results;
         }
