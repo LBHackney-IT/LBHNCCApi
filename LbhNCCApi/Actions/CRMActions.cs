@@ -109,27 +109,27 @@ namespace LbhNCCApi.Actions
             //incidentid
             if (Utils.NullToString(ncc.ServiceRequest.Id) != "")
             {
-                nccJObject["hackney_servicerequestid@odata.bind"] = "/incidents(" + ncc.ServiceRequest.Id + ")";
+                nccJObject["hackney_servicerequestid@odata.bind"] = $@"/incidents({ncc.ServiceRequest.Id})";
             }
             //Ticket number
             if (Utils.NullToString(ncc.ServiceRequest.TicketNumber) != "")
             {
                 nccJObject.Add("hackney_name", ncc.ServiceRequest.TicketNumber);
             }
-            if (Utils.NullToInteger(ncc.notestype) != 0)
+            if (Utils.NullToInteger(ncc.Notestype) != 0)
             {
-                nccJObject.Add("hackney_notestype", ncc.notestype);
+                nccJObject.Add("hackney_notestype", ncc.Notestype);
             }
             else { nccJObject.Add("hackney_notestype", 1); } //set as automatic
 
-            nccJObject.Add("hackney_notes", Utils.NullToString(ncc.notes));
+            nccJObject.Add("hackney_notes", Utils.NullToString(ncc.Notes));
             if (Utils.NullToString(ncc.ServiceRequest.ContactId) != "")
             {
-                nccJObject["hackney_contactid@odata.bind"] = "/contacts(" + ncc.ServiceRequest.ContactId + ")";
+                nccJObject["hackney_contactid@odata.bind"] = $@"/contacts({ncc.ServiceRequest.ContactId})";
             }
-            if (!string.IsNullOrEmpty(ncc.callReasonId))
+            if (!string.IsNullOrEmpty(ncc.CallReasonId))
             {
-                nccJObject["hackney_enquirytypeid@odata.bind"] = "/housing_housingenquirytypes(" + ncc.callReasonId + ")";
+                nccJObject["hackney_enquirytypeid@odata.bind"] = $@"/housing_housingenquirytypes({ncc.CallReasonId})";
             }
             if (!string.IsNullOrEmpty(ncc.GovNotifyTemplateType))
             {
@@ -147,15 +147,38 @@ namespace LbhNCCApi.Actions
             {
                 nccJObject["hackney_paymentstatus"] = Convert.ChangeType(ncc.PaymentStatus, ncc.PaymentStatus.GetTypeCode()).ToString();
             }
-            nccJObject["hackney_calltransferred"] = ncc.callTransferred.ToString();
+            nccJObject["hackney_calltransferred"] = ncc.CallTransferred.ToString();
 
-            if (!string.IsNullOrEmpty(ncc.housingTagRef))
+            if (!string.IsNullOrEmpty(ncc.HousingTagRef))
             {
-                nccJObject["hackney_housingtagref"] = ncc.housingTagRef;
+                nccJObject["hackney_housingtagref"] = ncc.HousingTagRef;
             }
-            if (!string.IsNullOrEmpty(ncc.otherReason))
+            if (!string.IsNullOrEmpty(ncc.OtherReason))
             {
-                nccJObject["hackney_otherreason"] = ncc.otherReason;
+                nccJObject["hackney_otherreason"] = ncc.OtherReason;
+            }
+            if (!string.IsNullOrEmpty(ncc.ServiceRequest.CreatedBy))
+            {
+                nccJObject["ownerid@odata.bind"] = $@"/systemusers({ncc.ServiceRequest.CreatedBy})";
+            }
+            if(ncc.Notestype == 3)//Its a callback
+            {
+                if (!string.IsNullOrEmpty(ncc.CallbackRequest.CallBackId))
+                {
+                    nccJObject["hackney_callbackid@odata.bind"] = $@"/hackney_nccinteractionses({ncc.CallbackRequest.CallBackId})";
+                }
+                if (!string.IsNullOrEmpty(ncc.CallbackRequest.RecipientEmailId))
+                {
+                    nccJObject["hackney_callbackofficeremailid"] = ncc.CallbackRequest.RecipientEmailId;
+                }
+                if (!string.IsNullOrEmpty(ncc.CallbackRequest.ManagerEmailId))
+                {
+                    nccJObject["hackney_callbackmanageremailid"] = ncc.CallbackRequest.ManagerEmailId;
+                }
+                if (!string.IsNullOrEmpty(ncc.CallbackRequest.PhoneNumber))
+                {
+                    nccJObject["hackney_callbackphonenumber"] = ncc.CallbackRequest.PhoneNumber;
+                }
             }
 
             return nccJObject;
@@ -216,6 +239,11 @@ namespace LbhNCCApi.Actions
             {
                 sr.Add("description", crmsr.Description);
             }
+            if (!string.IsNullOrEmpty(crmsr.CreatedBy))
+            {
+                sr["ownerid@odata.bind"] = $@"/systemusers({crmsr.CreatedBy})";
+            }
+
             return sr;
         }
 
@@ -294,6 +322,50 @@ namespace LbhNCCApi.Actions
 
             }
 
+        }
+
+        public static async Task<object> GetCallBackDetails(HttpClient hclient, string callbackId)
+        {
+            HttpResponseMessage result = null;
+            try
+            {
+                var query = CRMAPICall.GetCallBackDetails(callbackId);
+                result = CRMAPICall.getAsyncAPI(hclient, query).Result;
+                if (result != null)
+                {
+                    if (!result.IsSuccessStatusCode)
+                    {
+                        throw new ServiceException();
+                    }
+
+                    var response = JsonConvert.DeserializeObject<JObject>(result.Content.ReadAsStringAsync().Result);
+                    if (response != null)
+                    {
+                        var retResult = new Dictionary<string, object>
+                        {
+                            {
+                                "response", new Dictionary<string, object>{
+                                        { "nccinteractionsid", response["hackney_nccinteractionsid"]},
+                                        { "callbackmanageremailid", response["hackney_callbackmanageremailid"]},
+                                        { "callbackofficeremailid", response["hackney_callbackofficeremailid"]},
+                                        { "callbackphonenumber", response["hackney_callbackphonenumber"]},
+                                        { "notes", response["hackney_notes"]}
+                                }
+                            }
+                        };
+                        return retResult;
+                    }
+                    return null;
+                }
+                else
+                {
+                    throw new NullResponseException();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         public static List<dynamic> prepareNCCResultObject(List<JToken> nccResponse)
