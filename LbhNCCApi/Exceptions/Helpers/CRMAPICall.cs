@@ -302,6 +302,11 @@ namespace LbhNCCApi.Helpers
             return null;
         }
 
+        public static string GetCallBackDetails(string id)
+        {
+            return $@"/api/data/v8.2/hackney_nccinteractionses({id})?$select=hackney_callbackmanageremailid,hackney_callbackofficeremailid,hackney_callbackphonenumber,hackney_notes";
+        }
+
         public static string GetHousingRefFromAccount(string parentCustomerid)
         {
             return $@"/api/data/v8.2/accounts({parentCustomerid})?$select=housing_tag_ref";

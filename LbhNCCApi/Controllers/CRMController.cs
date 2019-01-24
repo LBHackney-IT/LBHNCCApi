@@ -128,8 +128,8 @@ namespace LbhNCCApi.Controllers
 
                         var nccInteraction = new NCCInteraction
                         {
-                            interactionId = tmInteractionId.ToString(),
-                            callReasonId = ncc.callReasonId,
+                            InteractionId = tmInteractionId.ToString(),
+                            CallReasonId = ncc.CallReasonId,
                             ServiceRequest = new CRMServiceRequest
                             {
                                 TicketNumber = ticketnumber,
@@ -311,6 +311,22 @@ namespace LbhNCCApi.Controllers
                 return new Trap().ThrowErrorMessage(ex);
             }
         }
+
+        [HttpGet]
+        [Route("GetCallbackDetails")]
+        public async Task<IActionResult> GetCallbackDetails(string CallbackId)
+        {
+            try
+            {
+                HttpClient hclient = _client.GetCRMClient(false);
+                return Json(await CRMActions.GetCallBackDetails(hclient, CallbackId));
+            }
+            catch (Exception ex)
+            {
+                return new Trap().ThrowErrorMessage(ex);
+            }
+        }
+
 
         /// <summary>
         /// Gets the Last X number of calls
