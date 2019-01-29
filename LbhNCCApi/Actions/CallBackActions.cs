@@ -7,6 +7,10 @@ using System.Web;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using LbhNCCApi.Helpers;
+using System.Net.Http;
+using LbhNCCApi.Exceptions;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace LbhNCCApi.Actions
 {
@@ -57,7 +61,9 @@ namespace LbhNCCApi.Actions
                 client.Host = _MailHost;
                 string strHTMLBodyOriginal = File.ReadAllText(Environment.CurrentDirectory + "/Templates/CallBackEmail.html");
                 strHTMLBodyOriginal = strHTMLBodyOriginal.Replace("[CALLBACKID]", callback.CallBackId);
-                strHTMLBodyOriginal = strHTMLBodyOriginal.Replace("[PHONENUMBER]", callback.CallBackId);
+                strHTMLBodyOriginal = strHTMLBodyOriginal.Replace("[CALLERFULLNAME]", callback.CallersFullname);
+                strHTMLBodyOriginal = strHTMLBodyOriginal.Replace("[PHONENUMBER]", callback.PhoneNumber);
+                strHTMLBodyOriginal = strHTMLBodyOriginal.Replace("[MESSAGE]", callback.MessageForEmail);
                 string[] OfficersRecipeints = callback.RecipientEmailId.Split(';');
                 foreach(var recipient in OfficersRecipeints)
                 {
@@ -88,5 +94,57 @@ namespace LbhNCCApi.Actions
             }
             return breturn;
         }
+
+        public static async Task<object> GetCallBackDetails(HttpClient hclient, string callbackId)
+        {
+            HttpResponseMessage result = null;
+            try
+            {
+                var query = CRMAPICall.GetCallBackDetails(callbackId);
+                result = CRMAPICall.getAsyncAPI(hclient, query).Result;
+                if (result != null)
+                {
+                    if (!result.IsSuccessStatusCode)
+                    {
+                        throw new ServiceException();
+                    }
+
+                    var response = JsonConvert.DeserializeObject<JObject>(result.Content.ReadAsStringAsync().Result);
+                    if (response != null)
+                    {
+                        var retResult = new Dictionary<string, object>
+                        {
+                            {
+                                "response", new Dictionary<string, object>{
+                                        { "nccinteractionsid", response["hackney_nccinteractionsid"]},
+                                        { "housingtagref", response["hackney_housingtagref"]},
+                                        { "calltypereasonid", response["_hackney_enquirytypeid_value"]},
+                                        { "calltypeotherreason", response["hackney_otherreason"]},
+                                        { "callbackmanageremailid", response["hackney_callbackmanageremailid"]},
+                                        { "callbackofficeremailid", response["hackney_callbackofficeremailid"]},
+                                        { "callbackphonenumber", response["hackney_callbackphonenumber"]},
+                                        { "notes", response["hackney_notes"]},
+                                        { "servicerequestid", response["_hackney_servicerequestid_value"]},
+                                        { "contactid", response["_hackney_contactid_value"]},
+                                        { "ticketnumber", response["hackney_name"]}
+
+                                }
+                            }
+                        };
+                        return retResult;
+                    }
+                    return null;
+                }
+                else
+                {
+                    throw new NullResponseException();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
     }
 }

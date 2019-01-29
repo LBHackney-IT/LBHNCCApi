@@ -179,6 +179,15 @@ namespace LbhNCCApi.Actions
                 {
                     nccJObject["hackney_callbackphonenumber"] = ncc.CallbackRequest.PhoneNumber;
                 }
+                if (ncc.CallbackRequest.Response != CallbackResponse.NotAssigned)
+                {
+                    nccJObject["hackney_callbackresponse"] = Convert.ChangeType(ncc.CallbackRequest.Response, ncc.CallbackRequest.Response.GetTypeCode()).ToString(); 
+                }
+                if (!string.IsNullOrEmpty(ncc.CallbackRequest.ResponseBy))
+                {
+                    nccJObject["hackney_callbackresponseby"] = ncc.CallbackRequest.ResponseBy;
+                }
+
             }
 
             return nccJObject;
@@ -322,50 +331,6 @@ namespace LbhNCCApi.Actions
 
             }
 
-        }
-
-        public static async Task<object> GetCallBackDetails(HttpClient hclient, string callbackId)
-        {
-            HttpResponseMessage result = null;
-            try
-            {
-                var query = CRMAPICall.GetCallBackDetails(callbackId);
-                result = CRMAPICall.getAsyncAPI(hclient, query).Result;
-                if (result != null)
-                {
-                    if (!result.IsSuccessStatusCode)
-                    {
-                        throw new ServiceException();
-                    }
-
-                    var response = JsonConvert.DeserializeObject<JObject>(result.Content.ReadAsStringAsync().Result);
-                    if (response != null)
-                    {
-                        var retResult = new Dictionary<string, object>
-                        {
-                            {
-                                "response", new Dictionary<string, object>{
-                                        { "nccinteractionsid", response["hackney_nccinteractionsid"]},
-                                        { "callbackmanageremailid", response["hackney_callbackmanageremailid"]},
-                                        { "callbackofficeremailid", response["hackney_callbackofficeremailid"]},
-                                        { "callbackphonenumber", response["hackney_callbackphonenumber"]},
-                                        { "notes", response["hackney_notes"]}
-                                }
-                            }
-                        };
-                        return retResult;
-                    }
-                    return null;
-                }
-                else
-                {
-                    throw new NullResponseException();
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
         }
 
         public static List<dynamic> prepareNCCResultObject(List<JToken> nccResponse)
