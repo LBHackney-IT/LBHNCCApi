@@ -312,22 +312,6 @@ namespace LbhNCCApi.Controllers
             }
         }
 
-        [HttpGet]
-        [Route("GetCallbackDetails")]
-        public async Task<IActionResult> GetCallbackDetails(string CallbackId)
-        {
-            try
-            {
-                HttpClient hclient = _client.GetCRMClient(false);
-                return Json(await CRMActions.GetCallBackDetails(hclient, CallbackId));
-            }
-            catch (Exception ex)
-            {
-                return new Trap().ThrowErrorMessage(ex);
-            }
-        }
-
-
         /// <summary>
         /// Gets the Last X number of calls
         /// </summary>

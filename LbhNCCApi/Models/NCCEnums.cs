@@ -17,7 +17,8 @@ namespace LbhNCCApi.Models
     {
         Manual = 1,
         Automatic = 2,
-        ActionDiary = 3
+        Callback = 3,
+        ActionDiary = 4
     }
 
     public enum PaymentStatus
@@ -26,6 +27,13 @@ namespace LbhNCCApi.Models
         Initiated = 1,
         Failed = 2,
         Successful = 3
+    }
+
+    public enum CallbackResponse
+    {
+        NotAssigned = 0,
+        CalledThemBack = 1,
+        CouldntGetThrough = 2
     }
 
 }
