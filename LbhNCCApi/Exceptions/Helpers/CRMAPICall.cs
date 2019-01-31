@@ -193,6 +193,7 @@ namespace LbhNCCApi.Helpers
                 <attribute name='hackney_govnotifier_channeltype' />
                 <attribute name='hackney_govnotifier_templatename' />
                 <attribute name='hackney_otherreason' />
+                <attribute name='ownerid' />
                 <filter>
                 <condition attribute='hackney_contactid' operator='eq' value='{ contactId }' />
                 </filter>

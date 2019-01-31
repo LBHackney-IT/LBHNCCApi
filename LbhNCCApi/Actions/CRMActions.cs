@@ -395,7 +395,7 @@ namespace LbhNCCApi.Actions
             var groupIncident = (from response in nccResponse
                                  group response by new
                                  {
-                                     createdBy = response["_createdby_value@OData.Community.Display.V1.FormattedValue"],
+                                     createdBy = response["_ownerid_value@OData.Community.Display.V1.FormattedValue"],
                                      createdOn = response["createdon"],
                                      notesType = response["hackney_notestype@OData.Community.Display.V1.FormattedValue"],
                                      notes = response["hackney_notes"],
