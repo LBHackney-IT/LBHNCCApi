@@ -428,7 +428,7 @@ namespace LbhNCCApi.Actions
             foreach (dynamic response in groupIncident)
             {
                 
-                if (response.notes == "SUMMARY")
+                if (response.notes == "Call Summary" )
                 {
                     if (string.IsNullOrEmpty(strCreatedByDateTime))
                     {

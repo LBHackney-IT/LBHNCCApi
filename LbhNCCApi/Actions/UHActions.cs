@@ -101,7 +101,7 @@ namespace LbhNCCApi.Actions
                     and trans_type in 
                     (select rec_code from rectype where rec_group <= 8 or rec_code = 'RIT') 
                     union all 
-                    select  999999999999999999 as transno,  sum(rtrans.real_value) as Amount, post_date as Date,'RNT' as Type, 'Total Rent' AS Description 
+                    select  999999999999999999 as transno,  sum(rtrans.real_value) as Amount, post_date as Date,'RNT' as Type, 'Total Charge' AS Description 
                     from rtrans 
                     where tag_ref <> '' and tag_ref<> 'ZZZZZZ' 
                     and tag_ref = '{tenancyAgreementRef}' 
