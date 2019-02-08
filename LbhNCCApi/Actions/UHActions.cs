@@ -13,18 +13,21 @@ namespace LbhNCCApi.Actions
 {
     public class UHActions
     {
-        private readonly SqlConnection conn;
-        private string _connstring = Environment.GetEnvironmentVariable("UHConnectionString");
+        private string _uhliveTransconnstring = Environment.GetEnvironmentVariable("UHConnectionString");
+        private string _uhtconnstring = Environment.GetEnvironmentVariable("UHTConnectionString");
+        private string _uhwconnstring = Environment.GetEnvironmentVariable("UHWConnectionString");
 
         public UHActions()
         {
-            conn = new SqlConnection(_connstring);
-            conn.Open();
+
         }
 
         public List<ActionDiaryHistory> GetAllActionDiary(string tenancyAgreementRef)
         {
-            var results = conn.Query<ActionDiaryHistory>(
+            SqlConnection uhtconn = new SqlConnection(_uhtconnstring);
+            uhtconn.Open();
+
+            var results = uhtconn.Query<ActionDiaryHistory>(
                 " select tag_ref TenancyRef, raaction.act_name ActionName, action_comment Comment, username Username, action_date CreationDate " +
                 " from araction " +
                 " inner join raaction on raaction.act_code = araction.action_code " +
@@ -34,12 +37,16 @@ namespace LbhNCCApi.Actions
                 " order by araction.action_no desc ",
                 new { allRefs = tenancyAgreementRef }
             ).ToList();
+
+            uhtconn.Close();
             return results;
         }
 
         public List<RentBreakdowns> GetAllRentBreakDowns(string tenancyAgreementRef)
         {
-            var results = conn.Query<RentBreakdowns>(
+            SqlConnection uhtconn = new SqlConnection(_uhliveTransconnstring);
+            uhtconn.Open();
+            var results = uhtconn.Query<RentBreakdowns>(
                 $@" SELECT  dt.deb_desc Description, dt.deb_code Code, deb_value Value, di.eff_date EffectiveDate, di.deb_last_charge LastChargeDate    
                     FROM debitem di 
                     inner join debtype dt on dt.deb_code = di.deb_code
@@ -49,16 +56,20 @@ namespace LbhNCCApi.Actions
 	                    FROM debitem di
 	                    where (di.tag_ref = '{tenancyAgreementRef}' or di.prop_ref = (select prop_ref from tenagree where tag_ref = '{tenancyAgreementRef}'))     
 	                    and deb_last_charge <> '1900-01-01 00:00:00' 
+                        and dt.deb_code <> 'DSB'
                         GROUP BY deb_code
-                    ) ",
+                    ) ",// DSB - SC-Balancing Charge which is added directly once a year onto Leaseholders transactions so not needed to show in the Rent breakdown
                 new { allRefs = tenancyAgreementRef }
             ).ToList();
+            uhtconn.Close();
             return results;
         }
 
         public List<dynamic> GetAllActionDiaries(string tenancyAgreementRef)
         {
-            var results = conn.Query<ADNotes>(
+            SqlConnection uhtconn = new SqlConnection(_uhtconnstring);
+            uhtconn.Open();
+            var results = uhtconn.Query<ADNotes>(
                 " select action_date Date, 'Action Diary' Type, username Username, raaction.act_name Reason,  action_comment Notes " +
                 " from araction " +
                 " inner join raaction on raaction.act_code = araction.action_code " +
@@ -86,39 +97,84 @@ namespace LbhNCCApi.Actions
                 }
                 nccList.Add(interactionsObj);
             }
+            uhtconn.Close();
             return nccList;
+        }
+
+        public object AddTenancyAgreementNotes(string tenancyAgreementId, string notes, string username)
+        {
+            SqlConnection uhtconn = new SqlConnection(_uhtconnstring);
+            uhtconn.Open();
+
+            var result = uhtconn.ExecuteScalar<object>(
+                $@"select tenagree_sid from tenagree where tag_ref = '{tenancyAgreementId}' "
+                    );
+            string tenagree_sid = result.ToString();
+            uhtconn.Close();
+
+            if(!string.IsNullOrEmpty(tenagree_sid))
+            {
+                SqlConnection uhwconn = new SqlConnection(_uhwconnstring);
+                uhwconn.Open();
+                var executeResult = uhwconn.Execute(
+                    $@"	INSERT INTO W2ObjectNote
+	                (KeyObject,KeyNumb,NDate,UserID,SecureCategory,NoteType,NoteText,AppCode)
+	                VALUES
+	                ('UHTenagree',{tenagree_sid},GETDATE(),'{username}','N','GLO_GEN','{notes}','UHA')"
+                        );
+                uhwconn.Close();
+            }
+            return tenagree_sid;
         }
 
         public List<TenancyTransactions> GetAllTenancyTransactions(string tenancyAgreementRef, string startdate)
         {
+            SqlConnection uhtconn = new SqlConnection(_uhliveTransconnstring);
+            uhtconn.Open();
+
             string fstartDate = Utils.FormatDate(startdate);
             string fendDate = DateTime.Now.ToString("yyyy-MM-dd"); 
-            string query = $@" select  transno, rtrans.real_value as Amount, rtrans.post_date as date, rtrans.trans_type as Type,  RTRIM(rectype.rec_desc) AS Description
-                    from rtrans join rectype on rtrans.trans_type = rectype.rec_code 
+            string query = $@" 
+                    select  transno, rtrans.real_value as Amount, rtrans.post_date as date, rtrans.trans_type as Type,  
+                    CASE
+                        WHEN rtrans.trans_type = 'DSB' THEN
+		                    RTRIM(debtype.deb_desc)
+		                    ELSE
+		                    RTRIM(rectype.rec_desc)
+                    END  AS Description
+                    from rtrans
+                    left join rectype on rtrans.trans_type = rectype.rec_code 
+                    left join debtype on rtrans.trans_type = debtype.deb_code 
                     where tag_ref<> '' and tag_ref<> 'ZZZZZZ' 
                     and post_date BETWEEN '{fstartDate}' AND '{fendDate}' 
                     and tag_ref = '{tenancyAgreementRef}' 
-                    and trans_type in 
-                    (select rec_code from rectype where rec_group <= 8 or rec_code = 'RIT') 
+                    and (trans_type in (select rec_code from rectype where rec_group <= 8 or rec_code = 'RIT') or trans_type = 'DSB')
                     union all 
                     select  999999999999999999 as transno,  sum(rtrans.real_value) as Amount, post_date as Date,'RNT' as Type, 'Total Charge' AS Description 
                     from rtrans 
                     where tag_ref <> '' and tag_ref<> 'ZZZZZZ' 
                     and tag_ref = '{tenancyAgreementRef}' 
-                    and post_date BETWEEN '{fstartDate}' AND '{fendDate}' and rtrans.trans_type like 'D%' and post_date = post_date group by tag_ref,post_date,prop_ref,house_ref 
+                    and post_date BETWEEN '{fstartDate}' AND '{fendDate}' and rtrans.trans_type like 'D%' and rtrans.trans_type <> 'DSB' 
+                    and post_date = post_date group by tag_ref,post_date,prop_ref,house_ref 
                     order by post_date desc, transno asc";
-            var results = conn.Query<TenancyTransactions>(query, new { allRefs = tenancyAgreementRef }).ToList();
+            var results = uhtconn.Query<TenancyTransactions>(query, new { allRefs = tenancyAgreementRef }).ToList();
+            uhtconn.Close();
             return results;
         }
 
         public TenancyAgreementDetials GetTenancyAgreementDetails(string tenancyAgreementRef)
         {
-            var result = conn.QueryFirstOrDefault<TenancyAgreementDetials>(
+            SqlConnection uhtconn = new SqlConnection(_uhliveTransconnstring);
+            uhtconn.Open();
+
+            var result = uhtconn.QueryFirstOrDefault<TenancyAgreementDetials>(
                 $@" select cur_bal as CurrentBalance, (cur_bal*-1) as DisplayBalance, (rent+service+other_charge)  as Rent, cot as StartDate,  RTRIM(house_ref) as HousingReferenceNumber, RTRIM(prop_ref) as PropertyReferenceNumber,
                     RTRIM(u_saff_rentacc) as PaymentReferenceNumber, terminated as IsAgreementTerminated, tenure as  TenureType 
                     from tenagree
                     where  tag_ref = '{tenancyAgreementRef}' "
                     );
+            uhtconn.Close();
+
             return result;
 
         }

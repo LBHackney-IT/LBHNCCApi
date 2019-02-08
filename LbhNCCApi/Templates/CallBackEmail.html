@@ -8,40 +8,26 @@
 </head>
 <body>
     <div id="base" class="govuk-form-group">
-    <label style="font-family: nta,Arial,sans-serif;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;font-weight: 400;font-size: 3rem;line-height: 1.25;color: #0b0c0c;display: block;margin-bottom: 5px;" for="example">
-        You have a new resident callback.
-    </label>
-    <label style="font-family: nta,Arial,sans-serif;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;font-weight: 400;font-size: 16px;font-size: 1rem;line-height: 1.25;color: #0b0c0c;display: block;margin-bottom: 5px;" for="with-hint">
-        You need to call <b>[CALLERFULLNAME]</b> within 48 hours of receiving this email.
-    </label>
-        <label style="font-family: nta,Arial,sans-serif;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;font-weight: 400;font-size: 16px;font-size: 1rem;line-height: 1.25;color: #0b0c0c;display: block;margin-bottom: 5px;" for="name">
-            Phone number
+        <label style="font-family: nta,Arial,sans-serif;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;font-weight: 400;font-size: 3rem;line-height: 1.25;color: #0b0c0c;display: block;margin-bottom: 5px;" for="example">
+            Please return a call
         </label>
-
-
-        <label style="font-family: nta,Arial,sans-serif;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;font-weight: 700;font-size: 24px;font-size: 1.5rem;line-height: 1.0416;margin-bottom: 15px;" for="example">
-            [PHONENUMBER]
+        <label style="font-family: nta,Arial,sans-serif;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;font-weight: 400;font-size: 16px;font-size: 1rem;line-height: 1.25;color: #0b0c0c;display: block;margin-bottom: 5px;" for="with-hint">
+            You have a new callback request from <b>[CALLERFULLNAME]</b> with reference [REFERENCE].  The number is  [PHONENUMBER].
         </label>
         <div>
             <label style="font-family: nta,Arial,sans-serif;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;font-weight: 400;font-size: 16px;font-size: 1rem;line-height: 1.25;color: #0b0c0c;display: block;margin-bottom: 5px;" for="name">
                 Message from NCC :
             </label>
-
-
             <label style="font-family: nta,Arial,sans-serif;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;font-weight: 700;font-size: 24px;font-size: 1.5rem;line-height: 1.0416;margin-bottom: 15px;" for="example">
                 [MESSAGE]
             </label>
         </div>
 
         <div style="font-family: nta,Arial,sans-serif;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;font-weight: 400;font-size: 16px;font-size: 1rem;line-height: 1.25;color: #0b0c0c;padding: 15px;margin-top: 20px;margin-bottom: 20px;clear: both;border-left: 10px solid #bfc1c3;">
-            When you have called back the resident you need to let us know by clicking the button below. You will then provide notes which will save to UH action Diary.
+            You need to respond to the call within 48hrs of receipt of this email. Please log your successful and unsuccessful attempts to get through by clicking the button below.
             <div>
                 <a style="font-family: nta,Arial,sans-serif;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;font-weight: 400;font-size: 16px;font-size: 1rem;line-height: 1.1875;box-sizing: border-box;display: inline-block;position: relative;width: auto;margin-top: 0px;margin-bottom: 22px;padding: 7px 10px;border: 2px solid rgba(0, 0, 0, 0);border-radius: 0;color: #fff;background-color: #00823b;box-shadow: 0px 2px 0px #003618;text-align: center;vertical-align: top;cursor: pointer;-webkit-appearance: none;"
-                   href="http://lbhwebintd01:6060/[CALLBACKID]/[EMAILRECIPIENT]/1">I have called them back</a>
-            </div>
-            <div>
-                <a style="font-family: nta,Arial,sans-serif;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;font-weight: 400;font-size: 16px;font-size: 1rem;line-height: 1.1875;box-sizing: border-box;display: inline-block;position: relative;width: auto;margin-top: 0px;margin-bottom: 22px;padding: 7px 10px;border: 2px solid rgba(0, 0, 0, 0);border-radius: 0;color: #fff;background-color: #00823b;box-shadow: 0px 2px 0px #003618;text-align: center;vertical-align: top;cursor: pointer;-webkit-appearance: none;"
-                   href="http://lbhwebintd01:6060/[CALLBACKID]/[EMAILRECIPIENT]/2">I couldn't get through</a>
+                   href="http://lbhwebintd01:6060/[CALLBACKID]/[EMAILRECIPIENT]">Log attempt</a>
             </div>
         </div>
 

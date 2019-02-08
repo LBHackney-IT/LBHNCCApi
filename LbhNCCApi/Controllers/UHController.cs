@@ -68,6 +68,23 @@ namespace LbhNCCApi.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("AddTenancyAgreementNotes")]
+        public async Task<IActionResult> AddTenancyAgreementNotes(string TenancyAgreementId, string Notes, string Username)
+        {
+            try
+            {
+                UHActions uh = new UHActions();
+                var result = uh.AddTenancyAgreementNotes(TenancyAgreementId, Notes, Username);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return new Trap().ThrowErrorMessage(ex);
+            }
+        }
+
+
         [HttpGet]
         [Route("GetAllArearsActionDiary")]
         public async Task<IActionResult> GetAllArearsActionDiary(string tenancyAgreementId)

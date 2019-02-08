@@ -62,6 +62,7 @@ namespace LbhNCCApi.Actions
                 string strHTMLBodyOriginal = File.ReadAllText(Environment.CurrentDirectory + "/Templates/CallBackEmail.html");
                 strHTMLBodyOriginal = strHTMLBodyOriginal.Replace("[CALLBACKID]", callback.CallBackId);
                 strHTMLBodyOriginal = strHTMLBodyOriginal.Replace("[CALLERFULLNAME]", callback.CallersFullname);
+                strHTMLBodyOriginal = strHTMLBodyOriginal.Replace("[REFERENCE]", callback.HousingTagRef);
                 strHTMLBodyOriginal = strHTMLBodyOriginal.Replace("[PHONENUMBER]", callback.PhoneNumber);
                 strHTMLBodyOriginal = strHTMLBodyOriginal.Replace("[MESSAGE]", callback.MessageForEmail);
                 string[] OfficersRecipeints = callback.RecipientEmailId.Split(';');
