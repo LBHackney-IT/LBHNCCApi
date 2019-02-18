@@ -127,6 +127,7 @@ namespace LbhNCCApi.Controllers
                 {
 
                     List<dynamic> notesAD = null;
+                    List<dynamic> notes = null;
 
                     HttpClient hclient = _client.GetCRMClient(true);
 
@@ -141,6 +142,15 @@ namespace LbhNCCApi.Controllers
                             notesCRM.Add(note);
                         }
                     }
+
+                    //notes = uh.GetAllNotes(housingRef.ToString());
+                    //if (notes != null)
+                    //{
+                    //    foreach (var note in notes)
+                    //    {
+                    //        notesCRM.Add(note);
+                    //    }
+                    //}
 
                     var result = new List<dynamic>
                     {

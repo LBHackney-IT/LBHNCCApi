@@ -120,11 +120,53 @@ namespace LbhNCCApi.Actions
                     $@"	INSERT INTO W2ObjectNote
 	                (KeyObject,KeyNumb,NDate,UserID,SecureCategory,NoteType,NoteText,AppCode)
 	                VALUES
-	                ('UHTenagree',{tenagree_sid},GETDATE(),'{username}','N','GLO_GEN','{notes}','UHA')"
+	                ('UHTenagree',{tenagree_sid},GETDATE(),'{username}','N','002','{notes}','UHA')"
                         );
                 uhwconn.Close();
             }
             return tenagree_sid;
+        }
+
+        public List<dynamic> GetAllNotes(string tenancyAgreementRef)
+        {
+            SqlConnection uhtconn = new SqlConnection(_uhtconnstring);
+            uhtconn.Open();
+
+            var result = uhtconn.ExecuteScalar<object>(
+                $@"select tenagree_sid from tenagree where tag_ref = '{tenancyAgreementRef}' "
+                    );
+            string tenagree_sid = result.ToString();
+            uhtconn.Close();
+
+            var nccList = new List<dynamic>();
+            if (!string.IsNullOrEmpty(tenagree_sid))
+            {
+                SqlConnection uhwconn = new SqlConnection(_uhwconnstring);
+                uhwconn.Open();
+                var results = uhwconn.Query<ADNotes>(
+                    $@"select NDate Date, 'Notes' Type, userid Username, '' Reason,  NoteText Notes  from W2ObjectNote
+                    where KeyObject = 'UHTenagree and KeyNumb = { tenagree_sid}" ,
+                    new { allRefs = tenancyAgreementRef }
+                ).ToList();
+
+                foreach (dynamic response in results)
+                {
+                    dynamic interactionsObj = new ExpandoObject();
+                    interactionsObj.notes = response.Notes;
+                    interactionsObj.notesType = response.Type;
+                    interactionsObj.callType = "";
+                    interactionsObj.callReasonType = response.Reason;
+                    interactionsObj.createdBy = response.Username;
+                    interactionsObj.clientName = "";
+                    if (response.Date != null)
+                    {
+                        interactionsObj.createdOn = response.Date;
+                    }
+                    nccList.Add(interactionsObj);
+                }
+                uhwconn.Close();
+            }
+            return nccList;
         }
 
         public List<TenancyTransactions> GetAllTenancyTransactions(string tenancyAgreementRef, string startdate)
