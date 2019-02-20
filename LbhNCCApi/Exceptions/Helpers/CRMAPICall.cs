@@ -210,6 +210,39 @@ namespace LbhNCCApi.Helpers
             return query.ToString();
 
         }
+        public static string getAllNonTenantADNotes(string contactId, string housingref)
+        {
+            var query = $@"
+                /api/data/v8.2/hackney_nccinteractionses?fetchXml=
+                <fetch version = '1.0' output-format = 'xml-platform' distinct = 'true' >
+                <entity name='hackney_nccinteractions' >
+                <attribute name='hackney_contactid' />
+                <attribute name='hackney_name' />
+                <attribute name='createdon' />
+                <attribute name='createdby' />
+                <attribute name='hackney_notes' />
+                <attribute name='hackney_notestype' />
+                <attribute name='hackney_govnotifier_channeltype' />
+                <attribute name='hackney_govnotifier_templatename' />
+                <attribute name='hackney_otherreason' />
+                <attribute name='ownerid' />
+                <filter>
+                <condition attribute='hackney_contactid' operator='eq' value='{ contactId }' />
+                <condition attribute='hackney_housingtagref' operator='eq' value='{ housingref }' />
+                </filter>
+                <link-entity name='contact' from='contactid' to='hackney_contactid' link-type='inner' >
+                <attribute name='fullname' />
+                </link-entity>
+                <link-entity name='housing_housingenquirytype' from='housing_housingenquirytypeid' to='hackney_enquirytypeid' link-type='outer' >
+                <attribute name='housing_name' />
+                <attribute name='housing_enquirycalltypename' />
+                <attribute name='housing_enquirycalltype' />
+                </link-entity>
+                </entity>
+                </fetch>";
+            return query.ToString();
+
+        }
 
         public static string getAllContactsWithHousingRef(string housingRef)
         {

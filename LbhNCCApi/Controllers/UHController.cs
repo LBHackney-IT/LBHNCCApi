@@ -125,7 +125,6 @@ namespace LbhNCCApi.Controllers
             {
                 if (!string.IsNullOrEmpty(housingRef))
                 {
-
                     List<dynamic> notesAD = null;
                     List<dynamic> notes = null;
 

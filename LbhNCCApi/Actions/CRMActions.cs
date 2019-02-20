@@ -17,6 +17,7 @@ namespace LbhNCCApi.Actions
 {
     public class CRMActions
     {
+        private static string _NonTenantId = Environment.GetEnvironmentVariable("NonTenantId");
 
         public async Task<object> CreateAnnotation(string objectName, string objectId, string Message, HttpClient client)
         {
@@ -90,6 +91,7 @@ namespace LbhNCCApi.Actions
                                 {
                                     GetAllADNotes(response.contactId.ToString(), _client, nccList);
                                 }
+                                GetAllNonTenantADNotes(housingRef, _client, nccList);
                                 return nccList;
                             }
                         }
@@ -218,9 +220,37 @@ namespace LbhNCCApi.Actions
                         }
                     }
                 }
-                else
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public static void GetAllNonTenantADNotes(string housingref, HttpClient _client, List<dynamic> nccList)
+        {
+            HttpResponseMessage result = null;
+            try
+            {
+                var query = CRMAPICall.getAllNonTenantADNotes(_NonTenantId, housingref);
+                result = CRMAPICall.getAsyncAPI(_client, query).Result;
+                if (result != null)
                 {
-                    throw new NullResponseException();
+                    if (!result.IsSuccessStatusCode)
+                    {
+                        throw new ServiceException();
+                    }
+
+                    var notes = JsonConvert.DeserializeObject<JObject>(result.Content.ReadAsStringAsync().Result);
+                    if (notes?["value"] != null)
+                    {
+                        var notesRet = notes["value"].ToList();
+
+                        if (notesRet.Count > 0)
+                        {
+                            prepareADNotesResultObject(notesRet, nccList);
+                        }
+                    }
                 }
             }
             catch (Exception ex)
