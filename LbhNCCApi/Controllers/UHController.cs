@@ -142,14 +142,14 @@ namespace LbhNCCApi.Controllers
                         }
                     }
 
-                    //notes = uh.GetAllNotes(housingRef.ToString());
-                    //if (notes != null)
-                    //{
-                    //    foreach (var note in notes)
-                    //    {
-                    //        notesCRM.Add(note);
-                    //    }
-                    //}
+                    notes = uh.GetAllNotes(housingRef.ToString());
+                    if (notes != null)
+                    {
+                        foreach (var note in notes)
+                        {
+                            notesCRM.Add(note);
+                        }
+                    }
 
                     var result = new List<dynamic>
                     {

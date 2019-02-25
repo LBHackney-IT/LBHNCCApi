@@ -120,7 +120,7 @@ namespace LbhNCCApi.Actions
                     $@"	INSERT INTO W2ObjectNote
 	                (KeyObject,KeyNumb,NDate,UserID,SecureCategory,NoteType,NoteText,AppCode)
 	                VALUES
-	                ('UHTenagree',{tenagree_sid},GETDATE(),'{username}','N','002','{notes}','UHA')"
+	                ('UHTenagree',{tenagree_sid},GETDATE(),'{username}','002','002','{notes}','UHA')"
                         );
                 uhwconn.Close();
             }
@@ -145,10 +145,11 @@ namespace LbhNCCApi.Actions
                 uhwconn.Open();
                 var results = uhwconn.Query<ADNotes>(
                     $@"select NDate Date, 'Notes' Type, userid Username, '' Reason,  NoteText Notes  from W2ObjectNote
-                    where KeyObject = 'UHTenagree and KeyNumb = { tenagree_sid}" ,
+                    where KeyObject = 'UHTenagree' and KeyNumb = '{ tenagree_sid}' 
+                    and NDate > DATEADD(Month, -6, GETDATE()) " ,
                     new { allRefs = tenancyAgreementRef }
                 ).ToList();
-
+                //and NDate > DATEADD(Month, -6, GETDATE()) 
                 foreach (dynamic response in results)
                 {
                     dynamic interactionsObj = new ExpandoObject();
