@@ -19,6 +19,7 @@ namespace LbhNCCApi.Actions
         private string _MailHost = Environment.GetEnvironmentVariable("MailHost");
         private string _CallBackEmailSubject = Environment.GetEnvironmentVariable("CallBackEmailSubject");
         private string _CallBackEmailFrom = Environment.GetEnvironmentVariable("CallBackEmailFrom");
+        private string _CallBackUrl = Environment.GetEnvironmentVariable("CallBackUrl");
 
         public CallBackActions()
         {
@@ -65,6 +66,7 @@ namespace LbhNCCApi.Actions
                 strHTMLBodyOriginal = strHTMLBodyOriginal.Replace("[REFERENCE]", callback.HousingTagRef);
                 strHTMLBodyOriginal = strHTMLBodyOriginal.Replace("[PHONENUMBER]", callback.PhoneNumber);
                 strHTMLBodyOriginal = strHTMLBodyOriginal.Replace("[MESSAGE]", callback.MessageForEmail);
+                strHTMLBodyOriginal = strHTMLBodyOriginal.Replace("[CALLBACKURL]", _CallBackUrl);
                 string[] OfficersRecipeints = callback.RecipientEmailId.Split(';');
                 foreach(var recipient in OfficersRecipeints)
                 {

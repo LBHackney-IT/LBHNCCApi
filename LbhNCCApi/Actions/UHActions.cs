@@ -145,8 +145,9 @@ namespace LbhNCCApi.Actions
                 uhwconn.Open();
                 var results = uhwconn.Query<ADNotes>(
                     $@"select NDate Date, 'Notes' Type, userid Username, '' Reason,  NoteText Notes  from W2ObjectNote
-                    where KeyObject = 'UHTenagree' and KeyNumb = '{ tenagree_sid}' 
-                    and NDate > DATEADD(Month, -6, GETDATE()) " ,
+                    where KeyObject = 'UHTenagree' and KeyNumb = '{ tenagree_sid}'  
+                    and NDate > DATEADD(Month, -6, GETDATE())  
+                    order by NDate desc" ,
                     new { allRefs = tenancyAgreementRef }
                 ).ToList();
                 //and NDate > DATEADD(Month, -6, GETDATE()) 
