@@ -11,6 +11,8 @@ using System.Net.Http;
 using LbhNCCApi.Exceptions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.DirectoryServices;
+using LBH.Utils;
 
 namespace LbhNCCApi.Actions
 {
@@ -20,6 +22,7 @@ namespace LbhNCCApi.Actions
         private string _CallBackEmailSubject = Environment.GetEnvironmentVariable("CallBackEmailSubject");
         private string _CallBackEmailFrom = Environment.GetEnvironmentVariable("CallBackEmailFrom");
         private string _CallBackUrl = Environment.GetEnvironmentVariable("CallBackUrl");
+        static string _DomainController = Environment.GetEnvironmentVariable("LDAP");
 
         public CallBackActions()
         {
@@ -96,6 +99,40 @@ namespace LbhNCCApi.Actions
                 throw ex;
             }
             return breturn;
+        }
+
+        public static async Task<object> SearchUsersFromActiveDirectory(string username)
+        {
+            DirectoryEntry dEntry = new DirectoryEntry(_DomainController);
+            DirectorySearcher dSearcher = new DirectorySearcher();
+            dSearcher.Filter = string.Format("(&(objectcategory=user)(name=*{0}*))", username);
+            SearchResultCollection sResultsList = dSearcher.FindAll();
+
+            List<ActiveDirectory> ADList = new List<ActiveDirectory>();
+            if (sResultsList != null)
+            {
+                for (int i = 0; i < sResultsList.Count; i++)
+                {
+                    SearchResult crt = sResultsList[i];
+                    PropertyCollection properties = crt.GetDirectoryEntry().Properties;
+                    if(properties["mail"].Value!=null)
+                    {
+                        ActiveDirectory ad = new ActiveDirectory();
+                        ad.Name = Utils.NullToString(properties["name"].Value);
+                        ad.Email = Utils.NullToString(properties["mail"].Value);
+                        ADList.Add(ad);
+                    }
+                }
+            }
+            var retResult = new Dictionary<string, object>
+            {
+                {
+                    "response", new Dictionary<string, object>{
+                            { "ADList", ADList}
+                    }
+                }
+            };
+            return retResult;
         }
 
         public static async Task<object> GetCallBackDetails(HttpClient hclient, string callbackId)

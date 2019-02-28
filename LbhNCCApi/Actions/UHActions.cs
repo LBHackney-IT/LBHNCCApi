@@ -111,8 +111,10 @@ namespace LbhNCCApi.Actions
                     );
             string tenagree_sid = result.ToString();
             uhtconn.Close();
+            username = username.Replace("'", "''");
+            notes = notes.Replace("'", "''");
 
-            if(!string.IsNullOrEmpty(tenagree_sid))
+            if (!string.IsNullOrEmpty(tenagree_sid))
             {
                 SqlConnection uhwconn = new SqlConnection(_uhwconnstring);
                 uhwconn.Open();

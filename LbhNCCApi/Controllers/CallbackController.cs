@@ -49,5 +49,19 @@ namespace LbhNCCApi.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("GetUsersListFromActiveDirectory")]
+        public async Task<IActionResult> GetUsersListFromActiveDirectory(string username)
+        {
+            try
+            {
+                return Json(await CallBackActions.SearchUsersFromActiveDirectory(username));
+            }
+            catch (Exception ex)
+            {
+                return new Trap().ThrowErrorMessage(ex);
+            }
+        }
+
     }
 }
