@@ -5,12 +5,10 @@ using System.Threading.Tasks;
 
 namespace LbhNCCApi.Models
 {
-    public class ADNotes
+    public class ActiveDirectory
     {
-        public string Date { get; set; }
-        public string Type { get; set; }
+        public string Name { get; set; }
+        public string Email { get; set; }
         public string Username { get; set; }
-        public string Reason { get; set; }
-        public string Notes{ get; set; }
     }
 }

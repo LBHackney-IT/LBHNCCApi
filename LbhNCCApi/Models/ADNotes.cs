@@ -11,6 +11,6 @@ namespace LbhNCCApi.Models
         public string Type { get; set; }
         public string Username { get; set; }
         public string Reason { get; set; }
-        public string Notes{ get; set; }
+        public string Notes { get; set; }
     }
 }
