@@ -68,6 +68,8 @@ namespace LbhNCCApi.Actions
                 strHTMLBodyOriginal = strHTMLBodyOriginal.Replace("[CALLERFULLNAME]", callback.CallersFullname);
                 strHTMLBodyOriginal = strHTMLBodyOriginal.Replace("[REFERENCE]", callback.HousingTagRef);
                 strHTMLBodyOriginal = strHTMLBodyOriginal.Replace("[PHONENUMBER]", callback.PhoneNumber);
+                strHTMLBodyOriginal = strHTMLBodyOriginal.Replace("[ADDRESS]", callback.Address);
+                strHTMLBodyOriginal = strHTMLBodyOriginal.Replace("[AGENTNAME]", callback.AgentName);
                 strHTMLBodyOriginal = strHTMLBodyOriginal.Replace("[MESSAGE]", callback.MessageForEmail);
                 strHTMLBodyOriginal = strHTMLBodyOriginal.Replace("[CALLBACKURL]", _CallBackUrl);
                 string[] OfficersRecipeints = callback.RecipientEmailId.Split(';');
@@ -120,6 +122,7 @@ namespace LbhNCCApi.Actions
                         ActiveDirectory ad = new ActiveDirectory();
                         ad.Name = Utils.NullToString(properties["name"].Value);
                         ad.Email = Utils.NullToString(properties["mail"].Value);
+                        ad.Username = Utils.NullToString(properties["sAMAccountName"].Value);
                         ADList.Add(ad);
                     }
                 }

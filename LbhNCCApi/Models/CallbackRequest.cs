@@ -11,7 +11,9 @@ namespace LbhNCCApi.Models
         public string RecipientEmailId { get; set; }
         public string ManagerEmailId { get; set; }
         public string CallersFullname { get; set; }
+        public string AgentName { get; set; }
         public string HousingTagRef { get; set; }
+        public string Address { get; set; }
         public string PhoneNumber { get; set; }
         public string MessageForEmail { get; set; }
         public CallbackResponse Response { get; set; }
