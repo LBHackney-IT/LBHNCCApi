@@ -111,8 +111,10 @@ namespace LbhNCCApi.Actions
                     );
             string tenagree_sid = result.ToString();
             uhtconn.Close();
-            username = username.Replace("'", "''");
-            notes = notes.Replace("'", "''");
+            if(!string.IsNullOrEmpty(username))
+                username = username.Replace("'", "''");
+            if (!string.IsNullOrEmpty(notes))
+                notes = notes.Replace("'", "''");
 
             if (!string.IsNullOrEmpty(tenagree_sid))
             {
@@ -143,12 +145,14 @@ namespace LbhNCCApi.Actions
             var nccList = new List<dynamic>();
             if (!string.IsNullOrEmpty(tenagree_sid))
             {
+                ///and SecureCategory <> '002' and NoteType <> '002'   this was added to avoid any Notes which we have added as our ones should come via CRM
                 SqlConnection uhwconn = new SqlConnection(_uhwconnstring);
                 uhwconn.Open();
                 var results = uhwconn.Query<ADNotes>(
                     $@"select NDate Date, 'Notes' Type, userid Username, '' Reason,  NoteText Notes  from W2ObjectNote
                     where KeyObject = 'UHTenagree' and KeyNumb = '{ tenagree_sid}'  
                     and NDate > DATEADD(Month, -6, GETDATE())  
+                    and SecureCategory <> '002' and NoteType <> '002'
                     order by NDate desc" ,
                     new { allRefs = tenancyAgreementRef }
                 ).ToList();

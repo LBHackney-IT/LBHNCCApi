@@ -72,6 +72,8 @@ namespace LbhNCCApi.Actions
                 strHTMLBodyOriginal = strHTMLBodyOriginal.Replace("[AGENTNAME]", callback.AgentName);
                 strHTMLBodyOriginal = strHTMLBodyOriginal.Replace("[MESSAGE]", callback.MessageForEmail);
                 strHTMLBodyOriginal = strHTMLBodyOriginal.Replace("[CALLBACKURL]", _CallBackUrl);
+                strHTMLBodyOriginal = strHTMLBodyOriginal.Replace("[TOADDRESSES]", callback.RecipientEmailId);
+                strHTMLBodyOriginal = strHTMLBodyOriginal.Replace("[CCADDRESSES]", callback.ManagerEmailId);
                 string[] OfficersRecipeints = callback.RecipientEmailId.Split(';');
                 foreach(var recipient in OfficersRecipeints)
                 {
@@ -107,7 +109,7 @@ namespace LbhNCCApi.Actions
         {
             DirectoryEntry dEntry = new DirectoryEntry(_DomainController);
             DirectorySearcher dSearcher = new DirectorySearcher();
-            dSearcher.Filter = string.Format("(&(objectcategory=user)(name=*{0}*))", username);
+            dSearcher.Filter = string.Format("(&(objectcategory=user)(name={0}*))", username);
             SearchResultCollection sResultsList = dSearcher.FindAll();
 
             List<ActiveDirectory> ADList = new List<ActiveDirectory>();
@@ -119,11 +121,15 @@ namespace LbhNCCApi.Actions
                     PropertyCollection properties = crt.GetDirectoryEntry().Properties;
                     if(properties["mail"].Value!=null)
                     {
-                        ActiveDirectory ad = new ActiveDirectory();
-                        ad.Name = Utils.NullToString(properties["name"].Value);
-                        ad.Email = Utils.NullToString(properties["mail"].Value);
-                        ad.Username = Utils.NullToString(properties["sAMAccountName"].Value);
-                        ADList.Add(ad);
+                        string email = Utils.NullToString(properties["mail"].Value);
+                        if (email.ToLower().EndsWith("hackney.gov.uk"))
+                        {
+                            ActiveDirectory ad = new ActiveDirectory();
+                            ad.Name = Utils.NullToString(properties["name"].Value);
+                            ad.Email = email;
+                            ad.Username = Utils.NullToString(properties["sAMAccountName"].Value);
+                            ADList.Add(ad);
+                        }
                     }
                 }
             }
