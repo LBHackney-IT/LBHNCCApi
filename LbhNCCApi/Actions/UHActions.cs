@@ -139,12 +139,12 @@ namespace LbhNCCApi.Actions
             var result = uhtconn.ExecuteScalar<object>(
                 $@"select tenagree_sid from tenagree where tag_ref = '{tenancyAgreementRef}' "
                     );
-            string tenagree_sid = result.ToString();
             uhtconn.Close();
 
             var nccList = new List<dynamic>();
-            if (!string.IsNullOrEmpty(tenagree_sid))
+            if (result != null)
             {
+                string tenagree_sid = result.ToString();
                 ///and SecureCategory <> '002' and NoteType <> '002'   this was added to avoid any Notes which we have added as our ones should come via CRM
                 SqlConnection uhwconn = new SqlConnection(_uhwconnstring);
                 uhwconn.Open();
