@@ -8,74 +8,75 @@
 </head>
 <body>
     <div id="base" class="govuk-form-group">
-        <label style="font-family: nta,Arial,sans-serif;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;font-weight: 400;font-size: 18px;line-height: 1.25;color: #0b0c0c;display: block;margin-bottom: 5px;" for="example">
-            Please return a call
-        </label>
-        <br />
-        <label style="font-family: nta,Arial,sans-serif;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;font-weight: 400;font-size: 12px;line-height: 1.25;color: #0b0c0c;display: block;margin-bottom: 5px;" for="with-hint">
-            We are rolling out a new system to monitor callbacks at the NCC. From now on, some NCC agents will request you to make a callback using this automatic email. If you receive this email, please use the button below to register your successful and unsuccessful callback attempts rather than using email. You do not need to add details of your response separately to Action Diary or Universal Housing Notes as your response will be automatically copied there.
-        </label>
-        <br />
-        <label style="font-family: nta,Arial,sans-serif;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;font-weight: 400;font-size: 12px;line-height: 1.25;color: #0b0c0c;display: block;margin-bottom: 5px;" for="with-hint">
-            You have a new callback request from <b>[CALLERFULLNAME]</b> with reference [REFERENCE] and address - [ADDRESS].  The number is  [PHONENUMBER].
-        </label>
-        <br />
-        <br />
-        <label style="font-family: nta,Arial,sans-serif;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;font-weight: 400;font-size: 12px;line-height: 1.25;color: #0b0c0c;display: block;margin-bottom: 5px;" for="with-hint">
-            <b>Please return a call</b>: [TOADDRESSES]
-        </label>
-        <br />
-        <label style="font-family: nta,Arial,sans-serif;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;font-weight: 400;font-size: 12px;line-height: 1.25;color: #0b0c0c;display: block;margin-bottom: 5px;" for="with-hint">
-            CC’d: [CCADDRESSES]
-        </label>
-        <br />
-        <br />
 
-        <div>
-            <label style="font-family: nta,Arial,sans-serif;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;font-weight: 400;font-size: 12px;line-height: 1.25;color: #0b0c0c;display: block;margin-bottom: 5px;" for="name">
-                Message from NCC :
-            </label>
-            <label style="font-family: nta,Arial,sans-serif;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;font-weight: 700;font-size: 12px;line-height: 1.0416;margin-bottom: 15px;" for="example">
-                [MESSAGE]
-            </label>
-        </div>
-        <br />
-        <br />
-        <label style="font-family: nta,Arial,sans-serif;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;font-weight: 400;font-size: 12px;line-height: 1.25;color: #0b0c0c;display: block;margin-bottom: 5px;" for="with-hint">
-            NCC Agent Name : [AGENTNAME].
-        </label>
-
-        <div style="font-family: nta,Arial,sans-serif;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;font-weight: 400;font-size: 12px;line-height: 1.25;color: #0b0c0c;padding: 15px;margin-top: 20px;margin-bottom: 20px;clear: both;border-left: 10px solid #bfc1c3;">
-            You need to respond to the call within 48hrs of receipt of this email. Please log your successful and unsuccessful attempts to get through by clicking the button below.
-            <br /><br />
-            <div>
-                <a style="font-family: nta,Arial,sans-serif;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;font-weight: 400;font-size: 12px;line-height: 1.1875;box-sizing: border-box;display: inline-block;position: relative;width: auto;margin-top: 0px;margin-bottom: 22px;padding: 7px 10px;border: 2px solid rgba(0, 0, 0, 0);border-radius: 0;color: #fff;background-color: #00823b;box-shadow: 0px 2px 0px #003618;text-align: center;vertical-align: top;cursor: pointer;-webkit-appearance: none;text-decoration: none;"
-                   href="[CALLBACKURL]/[CALLBACKID]/[EMAILRECIPIENT]">Log attempt</a>
-            </div>
-            <br /><br />
-            This currently only works if you are in a Hackney office using the Hackney wi-fi.
-        </div>
-
-        <!-- Action Button (Rectangle) -->
-        <div id="u1805">
-            <p>
-            </p>
-        </div>
-
-        <!-- Secondary Action Button (Rectangle) -->
-        <p>
-
+        <p style="font-family: nta,Arial,sans-serif;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;font-weight: 400;font-size: 12px;line-height: 1.25;color: #0b0c0c;display: block;margin-bottom: 5px;">
+            <b>PLEASE RETURN A CALL:</b> [TOADDRESSES]
         </p>
 
+        <p style="font-family: nta,Arial,sans-serif;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;font-weight: 400;font-size: 12px;line-height: 1.25;color: #0b0c0c;display: block;margin-bottom: 5px;">
+            <b>CC’d for information only:</b> [CCADDRESSES]
+        </p>
+
+        <br />
+
+        <p style="font-family: nta,Arial,sans-serif;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;font-weight: 400;font-size: 12px;line-height: 1.25;color: #0b0c0c;display: block;margin-bottom: 5px;">
+            We are rolling out a new system to monitor callbacks at the NCC. From now on, some NCC agents will request you to make a callback using this automatic email. Please use the button below to register your successful and unsuccessful callback attempts rather than using email. You do not need to add details of your response separately to Action Diary or Universal Housing Notes as your response will be automatically copied there.
+        </p>
+
+        <br />
+
+        <p style="font-family: nta,Arial,sans-serif;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;font-weight: 400;font-size: 12px;line-height: 1.25;color: #0b0c0c;display: block;margin-bottom: 5px;">
+            Please call back: <b>[CALLERFULLNAME]</b>
+        </p>
+
+        <p style="font-family: nta,Arial,sans-serif;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;font-weight: 400;font-size: 12px;line-height: 1.25;color: #0b0c0c;display: block;margin-bottom: 5px;">
+            Telephone: <b>[PHONENUMBER]</b>
+        </p>
+
+        <p style="font-family: nta,Arial,sans-serif;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;font-weight: 400;font-size: 12px;line-height: 1.25;color: #0b0c0c;display: block;margin-bottom: 5px;">
+            Reference: <b>[REFERENCE]</b>
+        </p>
+
+        <p style="font-family: nta,Arial,sans-serif;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;font-weight: 400;font-size: 12px;line-height: 1.25;color: #0b0c0c;display: block;margin-bottom: 5px;">
+            Address: <b>[ADDRESS]</b>
+        </p>
+
+        <br />
+
+        <p style="font-family: nta,Arial,sans-serif;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;font-weight: 400;font-size: 12px;line-height: 1.25;color: #0b0c0c;display: block;margin-bottom: 5px;">
+            Message from NCC: <b>[MESSAGE]</b>
+        </p>
+
+        <p style="font-family: nta,Arial,sans-serif;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;font-weight: 400;font-size: 12px;line-height: 1.25;color: #0b0c0c;display: block;margin-bottom: 5px;">
+            NCC Agent: <b>[AGENTNAME]</b>
+        </p>
+
+        <br />
+
+        <p style="font-family: nta,Arial,sans-serif;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;font-weight: 400;font-size: 12px;line-height: 1.25;color: #0b0c0c;display: block;margin-bottom: 5px;">
+            You need to respond to the call within 48hrs of receipt of this email. Please log your successful and unsuccessful attempts to get through by clicking the button below.
+        </p>
+
+        <br />
+
+        <p style="font-family: nta,Arial,sans-serif;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;font-weight: 400;font-size: 12px;line-height: 1.25;color: #0b0c0c;display: block;margin-bottom: 5px;">
+            <a style="font-family: nta,Arial,sans-serif;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;font-weight: 400;font-size: 14px;line-height: 1.1875;box-sizing: border-box;display: inline-block;position: relative;width: auto;margin-top: 0px;margin-bottom: 22px;padding: 7px 10px;border: 2px solid rgba(0, 0, 0, 0);border-radius: 0;color: #fff;background-color: #00823b;box-shadow: 0px 2px 0px #003618;text-align: center;vertical-align: top;cursor: pointer;-webkit-appearance: none;text-decoration: none;"
+                   href="[CALLBACKURL]/[CALLBACKID]/[EMAILRECIPIENT]">Log attempt</a>
+        </p>
+
+        <br />
+
+        <p style="font-family: nta,Arial,sans-serif;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;font-weight: 400;font-size: 12px;line-height: 1.25;color: #0b0c0c;display: block;margin-bottom: 5px;">
+            This currently only works if you are in a Hackney office using the Hackney Wi-Fi.
+        </p>
+
+        <br />
+
         <!-- Unnamed (Rectangle) -->
-        <div>
-            <div style="font-family: nta,Arial,sans-serif;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;font-weight: 400;font-size: 12px;line-height: 1.25;color: #0b0c0c;display: block;margin-bottom: 5px;">
-                <p><span>Kind Regards,</span></p><p><span>Hackney Neighbourhood Contact Centre</span></p><p><span><br></span></p><p><span>---</span></p><p><span><br></span></p><p><span>Please do not reply to this email as this inbox is not monitored.</span></p>
-            </div>
+        <div style="font-family: nta,Arial,sans-serif;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;font-weight: 400;font-size: 12px;line-height: 1.25;color: #0b0c0c;display: block;margin-bottom: 5px;">
+            <p><span>Kind Regards,</span></p><p><span>Hackney Neighbourhood Contact Centre</span></p><p><span><br></span></p><p><span>---</span></p><p><span><br></span></p><p><span>Please do not reply to this email as this inbox is not monitored.</span></p>
         </div>
 
-        <!-- Secondary Action Button (Rectangle) [footnote] -->
-        <div id="u1806_ann" class="annotation"></div>
     </div>
 </body>
 </html>
