@@ -21,7 +21,8 @@ namespace LbhNCCApi.Controllers
         {
             try
             {
-                return Json(await ParisActions.MakeParisCall(parisparam));
+                //return Json(await ParisActions.MakeParisCall(parisparam));
+                return Ok();
             }
             catch (Exception ex)
             {
