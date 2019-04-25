@@ -912,5 +912,65 @@ namespace LbhNCCApi.Actions
             }
             return interactionsObj;
         }
+
+        public static async Task<object> GetCRMEnquiryTypes()
+        {
+            HttpResponseMessage result = null;
+            try
+            {
+                var query = CRMAPICall.getCRMEnquiryTypes();
+
+                result = CRMAPICall.getAsyncAPI(_client, query).Result;
+                if (result != null)
+                {
+                    if (!result.IsSuccessStatusCode)
+                    {
+                        throw new ServiceException();
+                    }
+
+                    var nccRetrieveResponse = JsonConvert.DeserializeObject<JObject>(result.Content.ReadAsStringAsync().Result);
+                    if (nccRetrieveResponse?["value"] != null)
+                    {
+                        var nccResponse = nccRetrieveResponse["value"].ToList();
+
+                        if (nccResponse.Count > 0)
+                        {
+                            return new
+                            {
+                                results = prepareCRMEnquiryTypes(nccResponse)
+                            };
+
+                        }
+                    }
+                    return null;
+                }
+                else
+                {
+                    throw new NullResponseException();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+
+            }
+
+        }
+
+        private List<object> prepareCRMEnquiryTypes(List<JToken> responseList)
+        {
+            var debtItemObjectList = new List<dynamic>();
+            foreach (dynamic response in responseList)
+            {
+                dynamic debItemObject = new ExpandoObject();
+                debItemObject.enquiryTypeId = response["housing_housingenquirytypeid"].ToString();
+                debItemObject.enquiryType = response["housing_name"].ToString();
+                debItemObject.enquiryGroup = response["housing_servicepattern"].ToString();
+                debItemObject.enquiryCallType = response["housing_enquirycalltype"].ToString();
+                debtItemObjectList.Add(debItemObject);
+            }
+            return debtItemObjectList;
+        }
+
     }
 }

@@ -345,7 +345,31 @@ namespace LbhNCCApi.Controllers
                 return new Trap().ThrowErrorMessage(ex);
             }
         }
+        /// <summary>
+        /// Grab all the CRM Enquiry types.
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("GetCRMEnquiryTypes")]
+        public async Task<IActionResult> GetCRMEnquiryTypes()
+        {
+            try
+            {
+                HttpClient hclient = _client.GetCRMClient(true);
 
+                object nccInteractions = null;
+                nccInteractions = await CRMActions.GetAllNCCInteractions(contactId, hclient);
+                var json = Json(nccInteractions);
+                json.StatusCode = Json(nccInteractions).StatusCode;
+                json.ContentType = "application/json";
+                return json;
+
+            }
+            catch (Exception ex)
+            {
+                return new Trap().ThrowErrorMessage(ex);
+            }
+        }
 
     }
     }
