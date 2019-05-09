@@ -913,14 +913,14 @@ namespace LbhNCCApi.Actions
             return interactionsObj;
         }
 
-        public static async Task<object> GetCRMEnquiryTypes()
+        public static async Task<object> GetCRMEnquiryTypes(HttpClient client)
         {
             HttpResponseMessage result = null;
             try
             {
                 var query = CRMAPICall.getCRMEnquiryTypes();
 
-                result = CRMAPICall.getAsyncAPI(_client, query).Result;
+                result = CRMAPICall.getAsyncAPI(client, query).Result;
                 if (result != null)
                 {
                     if (!result.IsSuccessStatusCode)
@@ -957,7 +957,7 @@ namespace LbhNCCApi.Actions
 
         }
 
-        private List<object> prepareCRMEnquiryTypes(List<JToken> responseList)
+        private static List<object> prepareCRMEnquiryTypes(List<JToken> responseList)
         {
             var debtItemObjectList = new List<dynamic>();
             foreach (dynamic response in responseList)

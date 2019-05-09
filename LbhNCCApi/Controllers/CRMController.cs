@@ -355,12 +355,12 @@ namespace LbhNCCApi.Controllers
         {
             try
             {
-                HttpClient hclient = _client.GetCRMClient(true);
+                HttpClient client = _client.GetCRMClient(true);
 
-                object nccInteractions = null;
-                nccInteractions = await CRMActions.GetAllNCCInteractions(contactId, hclient);
-                var json = Json(nccInteractions);
-                json.StatusCode = Json(nccInteractions).StatusCode;
+                object CRMEnquiryTypes = null;
+                CRMEnquiryTypes = await CRMActions.GetCRMEnquiryTypes(client);
+                var json = Json(CRMEnquiryTypes);
+                json.StatusCode = Json(CRMEnquiryTypes).StatusCode;
                 json.ContentType = "application/json";
                 return json;
 
@@ -370,6 +370,5 @@ namespace LbhNCCApi.Controllers
                 return new Trap().ThrowErrorMessage(ex);
             }
         }
-
     }
-    }
+}
