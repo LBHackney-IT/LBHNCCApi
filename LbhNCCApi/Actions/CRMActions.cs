@@ -913,12 +913,12 @@ namespace LbhNCCApi.Actions
             return interactionsObj;
         }
 
-        public static async Task<object> GetCRMEnquiryTypes(HttpClient client)
+        public static async Task<object> GetCRMEnquirySubTypes(HttpClient client)
         {
             HttpResponseMessage result = null;
             try
             {
-                var query = CRMAPICall.getCRMEnquiryTypes();
+                var query = CRMAPICall.getCRMEnquirySubTypes();
 
                 result = CRMAPICall.getAsyncAPI(client, query).Result;
                 if (result != null)

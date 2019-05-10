@@ -355,7 +355,8 @@ namespace LbhNCCApi.Helpers
         {
             return $@"/api/data/v8.2/hackney_nccinteractionses({payment.InteractionId})?$select=hackney_paymentreference, hackney_paymentstatus";
         }
-        public static string getCRMEnquiryTypes()
+
+        public static string getCRMEnquirySubTypes()
         {
             return "/api/data/v8.2/housing_housingenquirytypes?$select=housing_housingenquirytypeid,housing_name,housing_servicepattern,housing_enquirycalltype";
         }

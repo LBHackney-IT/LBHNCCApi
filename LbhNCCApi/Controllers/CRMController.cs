@@ -351,17 +351,17 @@ namespace LbhNCCApi.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Route("GetCRMEnquiryTypes")]
-        public async Task<IActionResult> GetCRMEnquiryTypes()
+        [Route("GetCRMEnquirySubTypes")]
+        public async Task<IActionResult> GetCRMEnquirySubTypes()
         {
             try
             {
                 HttpClient client = _client.GetCRMClient(true);
 
-                object CRMEnquiryTypes = null;
-                CRMEnquiryTypes = await CRMActions.GetCRMEnquiryTypes(client);
-                var json = Json(CRMEnquiryTypes);
-                json.StatusCode = Json(CRMEnquiryTypes).StatusCode;
+                object CRMEnquirySubTypes = null;
+                CRMEnquirySubTypes = await CRMActions.GetCRMEnquirySubTypes(client);
+                var json = Json(CRMEnquirySubTypes);
+                json.StatusCode = Json(CRMEnquirySubTypes).StatusCode;
                 json.ContentType = "application/json";
                 return json;
 
@@ -375,10 +375,10 @@ namespace LbhNCCApi.Controllers
         /// <summary>
         /// Grab all the CRM Enquiry Call types
         /// </summary>
-        /// <returns>Returns a lookup set for available lookups</returns>
+        /// <returns></returns>
         [HttpGet]
-        [Route("GetCRMLookupTypes")]
-        public IActionResult GetCRMLookupTypes()
+        [Route("GetCRMEnquiryCallTypes")]
+        public IActionResult GetCRMEnquiryCallTypes()
         {
             try
             {
