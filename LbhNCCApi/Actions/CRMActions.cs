@@ -998,8 +998,8 @@ namespace LbhNCCApi.Actions
             var query = CRMAPICall.GetGlobalOptionSetDefinitions();
             var result = CRMAPICall.getAsyncAPI(client, query).Result;
 
-            var MetadataSets = JObject.Parse(result.Content.ReadAsStringAsync().Result)["value"];
-            foreach (JObject set in MetadataSets)
+            var metadataSets = JObject.Parse(result.Content.ReadAsStringAsync().Result)["value"];
+            foreach (JObject set in metadataSets)
             {
                 if (Equals(set["Name"].ToString(), "housing_enquirycalltype"))
                 {
