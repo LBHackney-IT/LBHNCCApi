@@ -360,6 +360,14 @@ namespace LbhNCCApi.Helpers
             return "/api/data/v8.2/housing_housingenquirytypes?$select=housing_housingenquirytypeid,housing_name,housing_servicepattern,housing_enquirycalltype";
         }
 
+        public static string GetCRMEnquiryCallTypes(string metadataId)
+        {
+            return $"/api/data/v8.2/GlobalOptionSetDefinitions({metadataId})";
+        }
 
+        public static string GetGlobalOptionSetDefinitions()
+        {
+            return "/api/data/v8.2/GlobalOptionSetDefinitions?$select=Name";
+        }
     }
 }

@@ -345,6 +345,7 @@ namespace LbhNCCApi.Controllers
                 return new Trap().ThrowErrorMessage(ex);
             }
         }
+
         /// <summary>
         /// Grab all the CRM Enquiry types.
         /// </summary>
@@ -368,6 +369,36 @@ namespace LbhNCCApi.Controllers
             catch (Exception ex)
             {
                 return new Trap().ThrowErrorMessage(ex);
+            }
+        }
+
+        /// <summary>
+        /// Grab all the CRM Enquiry Call types
+        /// </summary>
+        /// <returns>Returns a lookup set for available lookups</returns>
+        [HttpGet]
+        [Route("GetCRMLookupTypes")]
+        public IActionResult GetCRMLookupTypes()
+        {
+            try
+            {
+                var request = CRMActions.GetCRMEnquiryCallTypes(_client.GetCRMClient(true));
+                return Json(new { Result = request });
+            }
+            catch (Exception ex)
+            {
+                var errors = new List<ApiErrorMessage>
+                {
+                    new ApiErrorMessage
+                    {
+                        developerMessage = ex.Message,
+                        userMessage = "We had some problems processing your request"
+                    }
+                };
+
+                var json = Json(errors);
+                json.StatusCode = 500;
+                return json;
             }
         }
     }
