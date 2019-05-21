@@ -346,6 +346,60 @@ namespace LbhNCCApi.Controllers
             }
         }
 
+        /// <summary>
+        /// Grab all the CRM Enquiry types.
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("CRMEnquirySubTypes")]
+        public async Task<IActionResult> CRMEnquirySubTypes()
+        {
+            try
+            {
+                HttpClient client = _client.GetCRMClient(true);
 
+                object CRMEnquirySubTypes = null;
+                CRMEnquirySubTypes = await CRMActions.GetCRMEnquirySubTypes(client);
+                var json = Json(CRMEnquirySubTypes);
+                json.StatusCode = Json(CRMEnquirySubTypes).StatusCode;
+                json.ContentType = "application/json";
+                return json;
+
+            }
+            catch (Exception ex)
+            {
+                return new Trap().ThrowErrorMessage(ex);
+            }
+        }
+
+        /// <summary>
+        /// Grab all the CRM Enquiry Call types
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("CRMEnquiryCallTypes")]
+        public IActionResult CRMEnquiryCallTypes()
+        {
+            try
+            {
+                var request = CRMActions.GetCRMEnquiryCallTypes(_client.GetCRMClient(true));
+                return Ok(new { Result = request });
+            }
+            catch (Exception ex)
+            {
+                var errors = new List<ApiErrorMessage>
+                {
+                    new ApiErrorMessage
+                    {
+                        developerMessage = ex.Message,
+                        userMessage = "We had some problems processing your request"
+                    }
+                };
+
+                var json = Json(errors);
+                json.StatusCode = 500;
+                return json;
+            }
+        }
     }
-    }
+}

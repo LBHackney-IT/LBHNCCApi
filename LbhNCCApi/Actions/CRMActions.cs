@@ -912,5 +912,96 @@ namespace LbhNCCApi.Actions
             }
             return interactionsObj;
         }
+
+        public static async Task<object> GetCRMEnquirySubTypes(HttpClient client)
+        {
+            HttpResponseMessage result = null;
+            try
+            {
+                var query = CRMAPICall.getCRMEnquirySubTypes();
+
+                result = CRMAPICall.getAsyncAPI(client, query).Result;
+                if (result != null)
+                {
+                    if (!result.IsSuccessStatusCode)
+                    {
+                        throw new ServiceException();
+                    }
+
+                    var nccRetrieveResponse = JsonConvert.DeserializeObject<JObject>(result.Content.ReadAsStringAsync().Result);
+                    if (nccRetrieveResponse?["value"] != null)
+                    {
+                        var nccResponse = nccRetrieveResponse["value"].ToList();
+
+                        if (nccResponse.Count > 0)
+                        {
+                            return new
+                            {
+                                results = prepareCRMEnquiryTypes(nccResponse)
+                            };
+                        }
+                    }
+                    return null;
+                }
+                throw new NullResponseException();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        private static List<object> prepareCRMEnquiryTypes(List<JToken> responseList)
+        {
+            var debtItemObjectList = new List<dynamic>();
+            foreach (dynamic response in responseList)
+            {
+                dynamic debItemObject = new ExpandoObject();
+                debItemObject.enquiryTypeId = response["housing_housingenquirytypeid"].ToString();
+                debItemObject.enquiryType = response["housing_name"].ToString();
+                debItemObject.enquiryGroup = response["housing_servicepattern"].ToString();
+                debItemObject.enquiryCallType = response["housing_enquirycalltype"].ToString();
+                debtItemObjectList.Add(debItemObject);
+            }
+            return debtItemObjectList;
+        }
+
+        public static object GetCRMEnquiryCallTypes(HttpClient client)
+        {
+            var metadataId = GetEnquiryTypeMetadataId(client);
+            var query = CRMAPICall.GetCRMEnquiryCallTypes(metadataId);
+            var result = CRMAPICall.getAsyncAPI(client, query).Result;
+            var jObject = JObject.Parse(result.Content.ReadAsStringAsync().Result);
+            return FormatCRMEnquiryCallTypeResponse(jObject);
+        }
+
+        private static object FormatCRMEnquiryCallTypeResponse(JObject jObject)
+        {
+            var formattedResponse = new Dictionary<string, string>();
+            var jItems = jObject["Options"];
+            foreach (JObject item in jItems)
+            {
+                var respKey = (string)item["Value"];
+                var respValue = (string)item["Label"]["LocalizedLabels"][0]["Label"];
+                formattedResponse.Add(respKey, respValue);
+            }
+            return formattedResponse;
+        }
+
+        private static string GetEnquiryTypeMetadataId(HttpClient client) 
+        {
+            var query = CRMAPICall.GetGlobalOptionSetDefinitions();
+            var result = CRMAPICall.getAsyncAPI(client, query).Result;
+
+            var metadataSets = JObject.Parse(result.Content.ReadAsStringAsync().Result)["value"];
+            foreach (JObject set in metadataSets)
+            {
+                if (Equals(set["Name"].ToString(), "housing_enquirycalltype"))
+                {
+                    return set["MetadataId"].ToString();
+                }
+            }
+            return null;
+        }
     }
 }
