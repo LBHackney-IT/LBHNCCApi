@@ -351,8 +351,8 @@ namespace LbhNCCApi.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Route("GetCRMEnquirySubTypes")]
-        public async Task<IActionResult> GetCRMEnquirySubTypes()
+        [Route("CRMEnquirySubTypes")]
+        public async Task<IActionResult> CRMEnquirySubTypes()
         {
             try
             {
@@ -377,8 +377,8 @@ namespace LbhNCCApi.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Route("GetCRMEnquiryCallTypes")]
-        public IActionResult GetCRMEnquiryCallTypes()
+        [Route("CRMEnquiryCallTypes")]
+        public IActionResult CRMEnquiryCallTypes()
         {
             try
             {
