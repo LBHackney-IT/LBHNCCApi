@@ -383,7 +383,7 @@ namespace LbhNCCApi.Controllers
             try
             {
                 var request = CRMActions.GetCRMEnquiryCallTypes(_client.GetCRMClient(true));
-                return Json(new { Result = request });
+                return Ok(new { Result = request });
             }
             catch (Exception ex)
             {
