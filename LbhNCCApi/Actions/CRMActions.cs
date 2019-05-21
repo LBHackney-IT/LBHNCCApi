@@ -943,17 +943,12 @@ namespace LbhNCCApi.Actions
                     }
                     return null;
                 }
-                else
-                {
-                    throw new NullResponseException();
-                }
+                throw new NullResponseException();
             }
             catch (Exception ex)
             {
                 throw ex;
-
             }
-
         }
 
         private static List<object> prepareCRMEnquiryTypes(List<JToken> responseList)
