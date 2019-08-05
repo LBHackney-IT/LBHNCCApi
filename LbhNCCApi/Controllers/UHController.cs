@@ -43,7 +43,8 @@ namespace LbhNCCApi.Controllers
                     {
                         ActionCode = "INC",
                         Comment = notes,
-                        TenancyAgreementRef = tenancyAgreementId
+                        TenancyAgreementRef = tenancyAgreementId,
+                        IsCommentOnly=true
                     },
                     DirectUser = new UserCredential
                     {
@@ -55,6 +56,11 @@ namespace LbhNCCApi.Controllers
                 var response = await client.CreateArrearsActionAsync(request);
                 if (response.Success)
                 {
+                    UHActions uh = new UHActions();
+                    DateTime actionNoteDatetime = DateTime.Now;
+
+                    await uh.UpdateRecordingDetails(response.ArrearsAction.Id, actionNoteDatetime);
+                  
                     return Ok(response.ArrearsAction.ActionBalance.ToString());
                 }
                 else
