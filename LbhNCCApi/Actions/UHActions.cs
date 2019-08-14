@@ -272,5 +272,25 @@ namespace LbhNCCApi.Actions
             return lstTransactionsState;
 
         }
+
+        public async Task UpdateRecordingDetails( int actionDiaryId, DateTime updateDate)
+        {
+            using (var conn = new SqlConnection(_uhtconnstring))
+            {
+                SqlCommand cmd = null;
+               
+                    cmd = new SqlCommand("UPDATE araction SET action_date=@action_date" +
+                                                    " WHERE araction_sid=@Id", conn);
+
+                conn.Open();
+                using (cmd)
+                {
+                    cmd.Parameters.AddWithValue("@Id", actionDiaryId);
+                  
+                    cmd.Parameters.AddWithValue("@action_date", updateDate);
+                    int rows = await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
+                }
+            }
+        }
     }
 }
