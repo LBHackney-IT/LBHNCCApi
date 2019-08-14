@@ -177,13 +177,13 @@ namespace LbhNCCApi.Actions
             return nccList;
         }
 
-        public List<TenancyTransactions> GetAllTenancyTransactions(string tenancyAgreementRef, string startdate)
+        public List<TenancyTransactions> GetAllTenancyTransactions(string tenancyAgreementRef, string startdate,string endDate)
         {
             SqlConnection uhtconn = new SqlConnection(_uhliveTransconnstring);
             uhtconn.Open();
 
             string fstartDate = Utils.FormatDate(startdate);
-            string fendDate = DateTime.Now.ToString("yyyy-MM-dd"); 
+            string fendDate = (!string.IsNullOrEmpty(endDate))  ? Utils.FormatDate(endDate): DateTime.Now.ToString("yyyy-MM-dd"); 
             string query = $@" 
                     select  transno, rtrans.real_value as Amount, rtrans.post_date as date, rtrans.trans_type as Type,  
                     CASE
@@ -229,10 +229,10 @@ namespace LbhNCCApi.Actions
 
         }
 
-        public List<TenancyTransactionStatements> GetAllTenancyTransactionStatements(string tenancyAgreementId, string startdate)
+        public List<TenancyTransactionStatements> GetAllTenancyTransactionStatements(string tenancyAgreementId, string startdate,string endDate)
         {
             TenancyAgreementDetials tenantDet = GetTenancyAgreementDetails(tenancyAgreementId);
-            List<TenancyTransactions> lstTransactions = GetAllTenancyTransactions(tenancyAgreementId, startdate);
+            List<TenancyTransactions> lstTransactions = GetAllTenancyTransactions(tenancyAgreementId, startdate,endDate);
             List<TenancyTransactionStatements> lstTransactionsState = new List<TenancyTransactionStatements>();
             float RecordBalance = 0;
             RecordBalance = float.Parse(tenantDet.CurrentBalance);
