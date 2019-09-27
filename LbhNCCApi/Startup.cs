@@ -11,6 +11,8 @@ using System.IO;
 using System.Reflection;
 using LbhNCCApi.Interfaces;
 using LbhNCCApi.Actions;
+using NLog.Extensions.Logging;
+using NLog.Web;
 
 namespace LbhNCCApi
 {
@@ -59,6 +61,9 @@ namespace LbhNCCApi
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
+            loggerFactory.AddNLog();
+            app.AddNLogWeb();
+            env.ConfigureNLog("NLog.config");
             app.UseCors("AllowAny");
             app.UseMvc();
             app.UseDeveloperExceptionPage();

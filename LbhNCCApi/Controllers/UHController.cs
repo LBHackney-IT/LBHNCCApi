@@ -10,6 +10,7 @@ using LbhNCCApi.Helpers;
 using LbhNCCApi.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace LbhNCCApi.Controllers
 {
@@ -22,8 +23,12 @@ namespace LbhNCCApi.Controllers
         private string UHWWebservice = Environment.GetEnvironmentVariable("UHWWebservice");
         private string UHWSUsername = Environment.GetEnvironmentVariable("UHWSUsername");
         private string UHWPassword = Environment.GetEnvironmentVariable("UHWPassword");
-        public UHController(ICRMClientActions client)
+        private ILogger<UHController> controllerLogger;
+        private ILogger<UHActions> actionsLogger;
+        public UHController(ICRMClientActions client, ILogger<UHController> uhControllerLogger, ILogger<UHActions> uhActionsLogger)
         {
+            controllerLogger = uhControllerLogger;
+            actionsLogger = uhActionsLogger;
             _client = client;
         }
 
@@ -194,12 +199,14 @@ namespace LbhNCCApi.Controllers
         {
             try
             {
-                UHActions uh = new UHActions();
+                UHActions uh = new UHActions(actionsLogger);
+                controllerLogger.LogInformation($"Get transactions statements for {tenancyAgreementId} with dates from {startdate} to {endDate}");
                 var result = uh.GetAllTenancyTransactionStatements(tenancyAgreementId, startdate,endDate);
                 return Ok(result);
             }
             catch (Exception ex)
             {
+                controllerLogger.LogInformation($"ERROR: Get transactions statements for {tenancyAgreementId} with dates from {startdate} to {endDate} - ex: {ex.InnerException}");
                 return new Trap().ThrowErrorMessage(ex);
             }
         }
