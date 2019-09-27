@@ -216,14 +216,8 @@ namespace LbhNCCApi.Actions
                     order by post_date desc, transno asc";
             var results = uhtconn.Query<TenancyTransactions>(query, new { allRefs = tenancyAgreementRef }).ToList();
             uhtconn.Close();
-
-            for (int i=0; i <= 5; i++)
-            {
-                uhActionsLogger.LogInformation(
-                    $"Latest {i} transactions for ref {tenancyAgreementRef}: AMOUNT {results[i].Amount}, " +
-                    $" DATE {results[i].Date}, DESC {results[i].Description}");
-            }
-          
+        
+            uhActionsLogger.LogInformation($"Latest 5 transactions for ref {tenancyAgreementRef}:   {JsonConvert.SerializeObject(results.GetRange(0, 5))}");
 
             return results;
         }
@@ -286,12 +280,9 @@ namespace LbhNCCApi.Actions
                 statement.Balance = DisplayRecordBalance;
                 lstTransactionsState.Add(statement);
             }
-            for (int i = 0; i <= 5; i++)
-            {
-                uhActionsLogger.LogInformation(
-                    $"Latest {i} transactions for ref {tenancyAgreementId}: IN {lstTransactionsState[i].In}, OUT {lstTransactionsState[i].Out} " +
-                    $" DATE {lstTransactionsState[i].Date}, DESC {lstTransactionsState[i].Description},  BAL {lstTransactionsState[i].Balance}");
-            }
+           
+            uhActionsLogger.LogInformation($"Latest 5 transactions for ref {tenancyAgreementId}:   {JsonConvert.SerializeObject(lstTransactionsState.GetRange(0, 5))}");
+
             return lstTransactionsState;
 
         }
