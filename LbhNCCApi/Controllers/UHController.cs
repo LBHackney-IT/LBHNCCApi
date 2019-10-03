@@ -183,7 +183,7 @@ namespace LbhNCCApi.Controllers
         {
             try
             {
-                UHActions uh = new UHActions();
+                UHActions uh = new UHActions(actionsLogger);
                 var result = uh.GetAllTenancyTransactions(tenancyAgreementId, startdate,endDate);
                 return Ok(result);
             }
@@ -217,7 +217,7 @@ namespace LbhNCCApi.Controllers
         {
             try
             {
-                UHActions uh = new UHActions();
+                UHActions uh = new UHActions(actionsLogger);
                 var result = uh.GetTenancyAgreementDetails(tenancyAgreementId);
                 return Ok(result);
             }
