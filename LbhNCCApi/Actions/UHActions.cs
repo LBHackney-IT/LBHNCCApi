@@ -8,6 +8,8 @@ using System.Data.SqlClient;
 using System.Dynamic;
 using System.Net.Http;
 using LBH.Utils;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace LbhNCCApi.Actions
 {
@@ -16,10 +18,15 @@ namespace LbhNCCApi.Actions
         private string _uhliveTransconnstring = Environment.GetEnvironmentVariable("UHConnectionString");
         private string _uhtconnstring = Environment.GetEnvironmentVariable("UHTConnectionString");
         private string _uhwconnstring = Environment.GetEnvironmentVariable("UHWConnectionString");
-
+        private ILogger<UHActions> uhActionsLogger;
         public UHActions()
         {
 
+        }
+
+        public UHActions(ILogger<UHActions> actionLogger)
+        {
+            uhActionsLogger = actionLogger;
         }
 
         public List<ActionDiaryHistory> GetAllActionDiary(string tenancyAgreementRef)
@@ -181,9 +188,9 @@ namespace LbhNCCApi.Actions
         {
             SqlConnection uhtconn = new SqlConnection(_uhliveTransconnstring);
             uhtconn.Open();
-
             string fstartDate = Utils.FormatDate(startdate);
-            string fendDate = (!string.IsNullOrEmpty(endDate))  ? Utils.FormatDate(endDate): DateTime.Now.ToString("yyyy-MM-dd"); 
+            string fendDate = (!string.IsNullOrEmpty(endDate))  ? Utils.FormatDate(endDate): DateTime.Now.ToString("yyyy-MM-dd");
+            uhActionsLogger.LogInformation($"Getting transactions for ref {tenancyAgreementRef} with dates {fstartDate} to {fendDate}");
             string query = $@" 
                     select  transno, rtrans.real_value as Amount, rtrans.post_date as date, rtrans.trans_type as Type,  
                     CASE
@@ -209,11 +216,15 @@ namespace LbhNCCApi.Actions
                     order by post_date desc, transno asc";
             var results = uhtconn.Query<TenancyTransactions>(query, new { allRefs = tenancyAgreementRef }).ToList();
             uhtconn.Close();
+        
+            uhActionsLogger.LogInformation($"Latest 5 transactions for ref {tenancyAgreementRef}:   {JsonConvert.SerializeObject(results.GetRange(0, 5))}");
+
             return results;
         }
 
         public TenancyAgreementDetials GetTenancyAgreementDetails(string tenancyAgreementRef)
         {
+            uhActionsLogger.LogInformation($"Get tenancy details for tag ref {tenancyAgreementRef}");
             SqlConnection uhtconn = new SqlConnection(_uhliveTransconnstring);
             uhtconn.Open();
 
@@ -225,6 +236,7 @@ namespace LbhNCCApi.Actions
                     );
             uhtconn.Close();
 
+            uhActionsLogger.LogInformation($"Tenancy current balance retrieved for ref {tenancyAgreementRef}: {result.CurrentBalance}");
             return result;
 
         }
@@ -236,7 +248,7 @@ namespace LbhNCCApi.Actions
             List<TenancyTransactionStatements> lstTransactionsState = new List<TenancyTransactionStatements>();
             float RecordBalance = 0;
             RecordBalance = float.Parse(tenantDet.CurrentBalance);
-
+            uhActionsLogger.LogInformation($"Account's {tenancyAgreementId} current balance: {RecordBalance}");
             foreach (TenancyTransactions trans in lstTransactions)
             {
                 TenancyTransactionStatements statement = new TenancyTransactionStatements();
@@ -268,6 +280,8 @@ namespace LbhNCCApi.Actions
                 statement.Balance = DisplayRecordBalance;
                 lstTransactionsState.Add(statement);
             }
+           
+            uhActionsLogger.LogInformation($"Latest 5 transactions for ref {tenancyAgreementId}:   {JsonConvert.SerializeObject(lstTransactionsState.GetRange(0, 5))}");
 
             return lstTransactionsState;
 
