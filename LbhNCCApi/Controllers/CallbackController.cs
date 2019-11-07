@@ -21,7 +21,7 @@ namespace LbhNCCApi.Controllers
 
         [HttpPost]
         [Route("SendCallbackEmail")]
-        public async Task<IActionResult> SendCallbackEmail(CallbackRequest callback)
+        public async Task<IActionResult> SendCallbackEmail([FromBody]CallbackRequest callback)
         {
             try
             {

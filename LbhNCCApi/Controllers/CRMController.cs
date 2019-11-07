@@ -94,7 +94,7 @@ namespace LbhNCCApi.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("CreateNCCInteractions")]
-        public async Task<IActionResult> CreateNCCInteractions(NCCInteraction ncc)
+        public async Task<IActionResult> CreateNCCInteractions([FromBody]NCCInteraction ncc)
         {
             try
             {
@@ -167,6 +167,7 @@ namespace LbhNCCApi.Controllers
             }
         }
 
+
         /// <summary>
         /// Create Service Request in CRM 365 in order to bind the Contact and Subject entity with appropriate 
         /// </summary>
@@ -174,7 +175,7 @@ namespace LbhNCCApi.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("CreateServiceRequests")]
-        public async Task<IActionResult> CreateServiceRequests(CRMServiceRequest crmsr)
+        public async Task<IActionResult> CreateServiceRequests([FromBody]CRMServiceRequest crmsr)
         {
             try
             {
@@ -222,6 +223,9 @@ namespace LbhNCCApi.Controllers
                 return new Trap().ThrowErrorMessage(ex);
             }
         }
+
+
+
 
         /// <summary>
         /// Sets the Default Communication details for the contact in CRM 365

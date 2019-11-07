@@ -8,6 +8,7 @@ using ArrearsAgreementService;
 using LbhNCCApi.Actions;
 using LbhNCCApi.Helpers;
 using LbhNCCApi.Interfaces;
+using LbhNCCApi.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -76,12 +77,12 @@ namespace LbhNCCApi.Controllers
 
         [HttpPost]
         [Route("AddTenancyAgreementNotes")]
-        public async Task<IActionResult> AddTenancyAgreementNotes(string TenancyAgreementId, string Notes, string Username)
+        public async Task<IActionResult> AddTenancyAgreementNotes([FromBody]UHNotes uhNotes)
         {
             try
             {
                 UHActions uh = new UHActions();
-                var result = uh.AddTenancyAgreementNotes(TenancyAgreementId, Notes, Username);
+                var result = uh.AddTenancyAgreementNotes(uhNotes.TenancyAgreementId, uhNotes.Notes, uhNotes.Username);
                 return Ok(result);
             }
             catch (Exception ex)
