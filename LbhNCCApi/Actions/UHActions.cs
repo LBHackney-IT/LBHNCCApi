@@ -47,19 +47,49 @@ namespace LbhNCCApi.Actions
             SqlConnection uhtconn = new SqlConnection(_uhliveTransconnstring);
             uhtconn.Open();
             var results = uhtconn.Query<RentBreakdowns>(
-                $@" SELECT  dt.deb_desc Description, dt.deb_code Code, deb_value Value, di.eff_date EffectiveDate, di.deb_last_charge LastChargeDate    
-                    FROM debitem di 
-                    inner join debtype dt on dt.deb_code = di.deb_code
-                    WHERE debitem_sid IN
-                    (
-	                    SELECT Max(debitem_sid)
-	                    FROM debitem di
-	                    where (di.tag_ref = '{tenancyAgreementRef}' or di.prop_ref = (select prop_ref from tenagree where tag_ref = '{tenancyAgreementRef}'))     
-	                    and deb_last_charge <> '1900-01-01 00:00:00' 
-                        and dt.deb_code <> 'DSB'
-                        GROUP BY deb_code
-                    ) ",// DSB - SC-Balancing Charge which is added directly once a year onto Leaseholders transactions so not needed to show in the Rent breakdown
-                new { allRefs = tenancyAgreementRef }
+                $@" 
+                    declare @nowDateDayAccuracy date = DATEADD(YEAR, 0, GETDATE())
+                    declare @1stAprilCurrentYear date = CAST(DATEPART(YEAR, @nowDateDayAccuracy) AS varchar(5)) + '-04-01'
+                    declare @1stAprilLastYear date = DATEADD(YEAR, -1, @1stAprilCurrentYear)
+                    declare @1stAprilMondCY date = DATEADD(WEEK, DATEDIFF(WEEK, 0, DATEADD(DAY, 6 - DATEPART(DAY, @1stAprilCurrentYear), @1stAprilCurrentYear)), 0)
+                    declare @1stAprilMondLY date = DATEADD(WEEK, DATEDIFF(WEEK, 0, DATEADD(DAY, 6 - DATEPART(DAY, @1stAprilLastYear), @1stAprilLastYear)), 0)
+
+                    SELECT
+	                    DT.deb_desc Description,
+	                    DT.deb_code Code,
+	                    DI.deb_value Value,
+	                    DI.eff_date EffectiveDate,
+	                    DI.term_date TerminationDate,
+	                    DI.deb_last_charge
+	                    FROM [debitem] DI
+	                    INNER JOIN [debtype] DT
+		                    ON DT.deb_code = DI.deb_code
+	                    WHERE (
+		                    DI.tag_ref = @tenancyRef
+		                    OR
+		                    DI.prop_ref = (
+			                    SELECT prop_ref
+				                    FROM [tenagree]
+				                    WHERE tag_ref = @tenancyRef
+		                    ))
+	                    AND DI.deb_code <> 'DSB'
+	                    AND (
+		                    (@nowDateDayAccuracy <= DATEADD(DAY, -1, @1stAprilCurrentYear)
+                                AND DI.eff_date BETWEEN @1stAprilLastYear AND @1stAprilMondLY)
+		                    OR (@nowDateDayAccuracy >= @1stAprilMondCY
+                                    AND DI.eff_date BETWEEN @1stAprilCurrentYear AND @1stAprilMondCY)
+		                    OR (@nowDateDayAccuracy BETWEEN @1stAprilCurrentYear AND @1stAprilMondCY
+                                    AND @nowDateDayAccuracy BETWEEN DI.eff_date AND DI.term_date)
+	                    )
+	                    GROUP BY 
+		                    DT.deb_code,
+		                    DT.deb_desc,
+		                    DI.deb_value,
+		                    DI.eff_date,
+		                    DI.term_date,
+		                    DI.deb_last_charge
+                ",// DSB - SC-Balancing Charge which is added directly once a year onto Leaseholders transactions so not needed to show in the Rent breakdown
+                new { tenancyRef = tenancyAgreementRef }
             ).ToList();
             uhtconn.Close();
             return results;
