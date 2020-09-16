@@ -235,8 +235,15 @@ namespace LbhNCCApi.Controllers
         {
             try
             {
+                var contactDetailsApi = Environment.GetEnvironmentVariable("CONTACT_DETAILS_API_URL");
+                var contactDetailsClient = new HttpClient
+                {
+                    BaseAddress = new Uri(contactDetailsApi)
+                };
+                contactDetailsClient.DefaultRequestHeaders.Add("Authorization", Environment.GetEnvironmentVariable("CONTACT_DETAILS_API_TOKEN"));
+
                 HttpClient hclient = _client.GetCRMClient(false);
-                var result = new CRMActions().SetCitizenCommunication(contactid, CommObject, hclient).ToString();
+                var result = new CRMActions().SetCitizenCommunication(contactid, CommObject, hclient, contactDetailsClient).ToString();
                 return Ok(result);
             }
             catch (Exception ex)

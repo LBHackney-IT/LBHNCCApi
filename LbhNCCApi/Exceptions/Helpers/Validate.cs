@@ -23,9 +23,9 @@ namespace LbhNCCApi.Exceptions.Helpers
         }
 
 
-        public static object ReturnMessage(bool success, string message)
+        public static Dictionary<string, Dictionary<string, object>> ReturnMessage(bool success, string message)
         {
-            var errormessage = new Dictionary<string, object>
+            var errormessage = new Dictionary<string, Dictionary<string, object>>
                 {
                     {"response",
                             new Dictionary<string, object>{

@@ -3,7 +3,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -108,7 +107,7 @@ namespace LbhNCCApi.Helpers
             return response;
         }
 
-        public static async Task<object> UpdateObject(HttpClient client, string requestUri, JObject updateObject)
+        public static async Task<Dictionary<string, Dictionary<string, object>>> UpdateObject(HttpClient client, string requestUri, JObject updateObject)
         {
             HttpResponseMessage updateResponse;
             var method = new HttpMethod("PATCH");

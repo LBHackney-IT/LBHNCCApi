@@ -763,14 +763,22 @@ namespace LbhNCCApi.Actions
             return null;
         }
 
-        public async Task<object> SetCitizenCommunication(string contactid, string CommsDetail, HttpClient _client)
+        public async Task<object> SetCitizenCommunication(string contactId, string commsDetail, HttpClient _client,
+            HttpClient contactDetailsClient)
         {
+            var contactDetailsApi = new ContactDetailsApi(contactDetailsClient);
             try
             {
-                var query = CRMAPICall.UpdateContactComms(contactid);
+                var query = CRMAPICall.UpdateContactComms(contactId);
                 JObject comms = new JObject();
-                comms.Add("hackney_communicationdetails", CommsDetail);
-                return  await CRMAPICall.UpdateObject(_client, query, comms);
+                comms.Add("hackney_communicationdetails", commsDetail);
+                var crmResponse = await CRMAPICall.UpdateObject(_client, query, comms);
+                if (Convert.ToBoolean(crmResponse["response"]["success"]))
+                {
+                    await contactDetailsApi.PostContactDetails(contactId, commsDetail).ConfigureAwait(true);
+                }
+
+                return crmResponse;
             }
             catch (Exception ex)
             {
